@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hangszer Vadászat</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    video, canvas { margin: 10px auto; display: block; }
+    #result { font-size: 20px; color: green; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🎺 Találd meg a hangszert!</h1>
+  <video id="video" width="320" height="240" autoplay></video>
+  <button id="captureBtn" onclick="captureAndMatch()">Kép készítés és felismerés</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+  <!-- Template képek -->
+
+  <img id="templateCiterakicsi" src="citeraKicsi.png" style="visibility: hidden;">
+  <img id="templateCiterakicsi1" src="citeraKicsi1.png" style="visibility: hidden;">
+  <img id="templateCiterakicsi2" src="citeraKicsi2.png" style="visibility: hidden;">
+  <img id="templateCiteranagy" src="citeraNagy.png" style="visibility: hidden;">
+  <img id="templateCiteranagy1" src="citeraNagy1.png" style="visibility: hidden;">
+  <img id="templateCiteranagy2" src="citeraNagy2.png" style="visibility: hidden;">
+  <img id="templateCiteranagy3" src="citeraNagy3.png" style="visibility: hidden;">
+  <img id="templateCiteranagy4" src="citeraNagy4.png" style="visibility: hidden;">
+  <img id="templateGitar" src="gitar.png" style="visibility: hidden;">
+  <img id="templateHarmonika" src="harmonika.png" style="visibility: hidden;">
+  <img id="templateHarmonika1" src="harmonika1.png" style="visibility: hidden;">
+  <img id="templateHarmonika2" src="harmonika2.png" style="visibility: hidden;">
+  <img id="templateKurt" src="kurt.png" style="visibility: hidden;">
+  <img id="templateKurt1" src="kurt1.png" style="visibility: hidden;">
+  <img id="templateKurt2" src="kurt2.png" style="visibility: hidden;">
+
+  <p id="result">Várakozás...</p>
+<script>
+function onOpenCvReady() {
+      video = document.getElementById("video");
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+      result = document.getElementById("result");
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(stream => video.srcObject = stream)
+        .catch(() => navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => video.srcObject = stream)
+          .catch(e => alert("Nem sikerült elérni a kamerát: " + e)));
+    }
+</script>
+
+  <script async src="https://docs.opencv.org/4.x/opencv.js" onload="onOpenCvReady()"></script>
+
+  <script>
+    class HangszerSablon {
+      constructor(name, elementId) {
+        this.name = name;
+        this.element = document.getElementById(elementId);
+      }
+
+      beolvasottMatrix() {
+        let mat = cv.imread(this.element);
+        cv.cvtColor(mat, mat, cv.COLOR_RGBA2GRAY);
+        cv.GaussianBlur(mat, mat, new cv.Size(5, 5), 0);
+        return mat;
+      }
+    }
+
+    const sablonok = [
+  new HangszerSablon("Citera Kicsi", "templateCiterakicsi"),
+  new HangszerSablon("Citera Kicsi1", "templateCiterakicsi1"),
+  new HangszerSablon("Citera Kicsi2", "templateCiterakicsi2"),
+  new HangszerSablon("Citera Nagy", "templateCiteranagy"),
+  new HangszerSablon("Citera Nagy1", "templateCiteranagy1"),
+  new HangszerSablon("Citera Nagy2", "templateCiteranagy2"),
+  new HangszerSablon("Citera Nagy3", "templateCiteranagy3"),
+  new HangszerSablon("Citera Nagy4", "templateCiteranagy4"),
+  new HangszerSablon("Gitár", "templateGitar"),
+  new HangszerSablon("Harmonika", "templateHarmonika"),
+  new HangszerSablon("Harmonika1", "templateHarmonika1"),
+  new HangszerSablon("Harmonika2", "templateHarmonika2"),
+  new HangszerSablon("Kürt", "templateKurt"),
+  new HangszerSablon("Kürt1", "templateKurt1"),
+  new HangszerSablon("Kürt2", "templateKurt2"),
+];
+
+    let video, canvas, context, result;
+
+    
+async function captureAndMatch() {
+  const btn = document.getElementById('captureBtn');
+  btn.style.display = 'none';                      // eltüntetjük
+  result.textContent = "⏳ Feldolgozás...";
+
+  const t0 = performance.now();                    // start idő
+
+  // --- a meglévő kép-összehasonlító logika ---
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  let src = cv.imread(canvas);
+  cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY);
+  cv.GaussianBlur(src, src, new cv.Size(5, 5), 0);
+
+  let found = false;
+  let legjobb = { nev: '', pont: 0 };
+
+  for (let sablon of sablonok) {
+    const tpl = sablon.beolvasottMatrix();
+    if (!tpl) continue;                             // null-check
+    let dst = new cv.Mat();
+    cv.matchTemplate(src, tpl, dst, cv.TM_CCOEFF_NORMED);
+    let { maxVal } = cv.minMaxLoc(dst);
+    if (maxVal > 0.5 && maxVal > legjobb.pont) {
+      legjobb = { nev: sablon.name, pont: maxVal };
+      found = true;
+    }
+    tpl.delete(); dst.delete();
+  }
+  src.delete();
+
+  const t1 = performance.now();                    // end idő
+  const dt = (t1 - t0).toFixed(0);
+
+  // 3. Eredmény kiírása + futásidő
+  if (found) {
+    result.innerHTML = `✅ Megtalált hangszer: <b>${legjobb.nev}</b><br>Egyezés: ${legjobb.pont.toFixed(2)}<br>⏱️ ${dt} ms`;
+  } else {
+    result.innerHTML = `❌ Nem található ismert hangszer.<br>⏱️ ${dt} ms`;
+  }
+
+  btn.style.display = 'inline-block';              // gomb vissza
+}
