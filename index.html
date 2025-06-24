@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>🎺 Találd meg a hangszert! V11</h1>
+  <h1>🎺 Találd meg a hangszert! V12</h1>
 
   <video id="video" width="320" height="240" autoplay muted playsinline></video>
   <style>
@@ -23,9 +23,12 @@
 </style>
   <button id="startButton" disabled>Kép készítés és felismerés</button>
   <p id="result">Várakozás a kamerára…</p>
+  <p id="progressText"
+   style="font-size:16px; color:#333; margin:10px 0; display:none;"
+></p>
   <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-
- <!-- ide tesszük majd a képeket -->
+ 
+ 
   <div id="templateContainer" style="display:none;"></div>
 
   <script>
