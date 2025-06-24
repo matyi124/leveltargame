@@ -1,4 +1,4 @@
-// script.js – ORB verzió
+// script.js – ORB verzió (Lazy init + progress + tuning)
 
 console.log('📝 script.js (ORB) betöltve');
 
@@ -8,14 +8,16 @@ let streamReady = false;
 // ORB és BFMatcher global
 let orb, bf;
 
-let tplKeypoints = {};    // { name: cv.KeyPointVector }
-let tplDescriptors = {};  // { name: cv.Mat }
+// sablonok referencia
+let sablonok = [];
+
+// ORB init státusz + progress
+let orbInited = false;
 
 cv['onRuntimeInitialized'] = () => {
   console.log('🥳 OpenCV ready (ORB)');
   setupUI();
   initCamera();
-  initORB();
 };
 
 function setupUI() {
@@ -28,115 +30,107 @@ function setupUI() {
   startButton.disabled = true;
   startButton.addEventListener('click', captureAndMatch);
 
-  const sablonok = Array.from(
-  document.querySelectorAll('#templateContainer img')
-).map(img => {
-  // img.id például 'tmpl_citeraAllo_1'
-  const parts = img.id.split('_');        // ['tmpl','citeraAllo','1']
-  parts.shift();                          // eltávolítjuk a 'tmpl' prefixet
-  const rawName = parts.slice(0, -1).join('_'); // ['citeraAllo']
-  // csinálunk belőle emberi nevet: 'citera Allo'
-  const name = rawName
-    .replace(/([A-Z])/g, ' $1')           // camelCase → szavak közé szóköz
-    .replace(/^./, s => s.toUpperCase()); // nagybetű az elején
-
-  return { name, element: img };
-})
+  // sablonok feltöltése
+  sablonok = Array.from(
+    document.querySelectorAll('#templateContainer img')
+  ).map(img => {
+    const parts = img.id.split('_'); // ['tmpl','RootName','i']
+    parts.shift();
+    const raw = parts.slice(0,-1).join('_');
+    const name = raw.replace(/([A-Z])/g,' $1').replace(/^./, c=>c.toUpperCase());
+    return { name, element: img };
+  });
 }
 
 function initCamera() {
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
+  navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }})
+    .then(stream=>{
       video.srcObject = stream;
       video.onloadedmetadata = () => {
-        video.play();
-        streamReady = true;
+        video.play(); streamReady = true;
         startButton.disabled = false;
         result.textContent = '✓ Kamera kész, kattints a gombra.';
       };
     })
-    .catch(err => {
+    .catch(err=>{
       console.error('🚨 Kamera hiba:', err);
       result.textContent = '🚨 Nem sikerült a kamera.';
     });
 }
 
-function initORB() {
-  console.log('🔧 init ORB + BFMatcher');
-  orb = new cv.ORB();
+async function ensureORBInit() {
+  if (orbInited) return;
+  // mutatunk progress elemet
+  const bar = document.getElementById('initProgress');
+  bar.max = sablonok.length;
+  result.innerHTML = '<em>⏳ Template-adatbázis építése…</em>';
+  await new Promise(r=>setTimeout(r,0));
+
+  orb = new cv.ORB(300 /*nFeatures*/,1.2,8,31,0,2,cv.ORB_HARRIS_SCORE,31,20);
   bf  = new cv.BFMatcher(cv.NORM_HAMMING, false);
 
-  // Előfeldolgozás: minden sablonhoz kiszámoljuk a kp+descriptort
-  sablonok.forEach(s => {
+  let i = 0;
+  for (const s of sablonok) {
     const imgEl = s.element;
-    if (!imgEl || !imgEl.complete) {
-      console.warn(`⚠️ Sablon nem betöltve: ${s.name}`);
-      return;
-    }
     let tpl = cv.imread(imgEl);
     cv.cvtColor(tpl, tpl, cv.COLOR_RGBA2GRAY);
     let kp = new cv.KeyPointVector(), desc = new cv.Mat();
     orb.detectAndCompute(tpl, new cv.Mat(), kp, desc);
     tpl.delete();
-
     tplKeypoints[s.name] = kp;
     tplDescriptors[s.name] = desc;
-    console.log(`📦 Sablon előfeldolgozva: ${s.name}, kp=${kp.size()}, desc=${desc.rows}×${desc.cols}`);
-  });
+    bar.value = ++i;
+  }
+  orbInited = true;
+  result.textContent = '✅ Template DB kész, kattints a gombra.';
+  startButton.disabled = false;
 }
 
 async function captureAndMatch() {
   if (!streamReady) return;
-  // 1) beolvasás
-  canvas.width  = video.videoWidth;
+  startButton.disabled = true;
+
+  if (!orbInited) {
+    await ensureORBInit();
+    return;
+  }
+
+  // előkészítés
+  canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  context.drawImage(video,0,0);
   result.innerHTML = '<em>⏳ Feldolgozás…</em>';
 
-  // 2) frame előkészítés
   let src = cv.imread(canvas);
-  cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY);
+  cv.cvtColor(src,src,cv.COLOR_RGBA2GRAY);
 
-  // 3) frame kp+desc
   let kpSrc = new cv.KeyPointVector(), descSrc = new cv.Mat();
   orb.detectAndCompute(src, new cv.Mat(), kpSrc, descSrc);
 
-  // 4) minden sablonnal match
-  let best = { name:null, matches:0 };
-  sablonok.forEach(s => {
-    const name = s.name;
-    const descTpl = tplDescriptors[name];
-    if (!descTpl || descTpl.empty() || descSrc.empty()) return;
-
-    // KNN‐match, ratio‐test
+  let best = { name:null, score:0 };
+  for (const s of sablonok) {
+    const descTpl = tplDescriptors[s.name];
+    if (!descTpl || descSrc.empty()) continue;
     let matches = new cv.DMatchVectorVector();
     bf.knnMatch(descTpl, descSrc, matches, 2);
-
     let good = 0;
-    for (let i = 0; i < matches.size(); i++) {
-      const m = matches.get(i).get(0);
-      const n = matches.get(i).get(1);
-      if (m.distance < 0.75 * n.distance) good++;
+    for (let i=0;i<matches.size();i++){
+      const m = matches.get(i).get(0), n = matches.get(i).get(1);
+      if (m.distance < 0.7 * n.distance) good++;
     }
-
-    console.log(`🔍 ${name}: good matches =`, good);
-    if (good > best.matches) {
-      best = { name, matches: good };
+    const ratio = good/descTpl.rows;
+    if (good>5 && ratio>0.1 && good>best.score) {
+      best = { name:s.name, score:good };
     }
-
     matches.delete();
-  });
-
-  // 5) eredmény kiírás
-  if (best.name) {
-    result.innerHTML = `✅ Felismert hangszer: <b>${best.name}</b> (${best.matches} match)`;
-  } else {
-    result.innerHTML = `❌ Nem található hangszer.`;
   }
 
-  // 6) tisztítás
-  src.delete();
-  kpSrc.delete();
-  descSrc.delete();
-}
+  if (best.name) {
+    result.innerHTML = `✅ Felismert hangszer: <b>${best.name}</b> (${best.score} match)`;
+  } else {
+    result.innerHTML = '❌ Nem található hangszer.';
+  }
 
+  src.delete(); kpSrc.delete(); descSrc.delete();
+  startButton.disabled = false;
+}
