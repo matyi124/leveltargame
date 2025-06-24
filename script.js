@@ -8,8 +8,6 @@ let streamReady = false;
 // ORB és BFMatcher global
 let orb, bf;
 
-// Sablon‐adatok tárolása
-let sablonok = [];        // HangszerSablon objektumok
 let tplKeypoints = {};    // { name: cv.KeyPointVector }
 let tplDescriptors = {};  // { name: cv.Mat }
 
@@ -43,8 +41,8 @@ function setupUI() {
     .replace(/^./, s => s.toUpperCase()); // nagybetű az elején
 
   return { name, element: img };
-});
-
+})
+}
 
 function initCamera() {
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -141,3 +139,4 @@ async function captureAndMatch() {
   kpSrc.delete();
   descSrc.delete();
 }
+

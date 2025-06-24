@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>🎺 Találd meg a hangszert! V8</h1>
+  <h1>🎺 Találd meg a hangszert! V9</h1>
 
   <video id="video" width="320" height="240" autoplay muted playsinline></video>
   <style>
@@ -31,13 +31,13 @@
   <script>
     // 1) Ide sorold fel, mely mappákban hány képed van
     const templateConfig = {
-      citeraAllo: 9,
-      citeraAlloKicsi: 7,
-      citeraKicsi: 7,
+      citeraAllo: 8,
+      citeraAlloKicsi: 6,
+      citeraKicsi: 6,
       gitar:      5,
-      harmonika:  6,
-      kurt:       6,
-      szarvaskurt:  6
+      harmonika:  5,
+      kurt:       5,
+      szarvaskurt:  5
      };
 
     // 2) Dinamikus img-elem generálás
@@ -46,7 +46,7 @@
       for (let i = 1; i <= count; i++) {
         const img = document.createElement('img');
         img.id  = `tmpl_${rootName}_${i}`;
-        img.src = `Hangszer/${rootName}/${rootName}${i}.jpg`;
+        img.src = `Hangszerek/${rootName}/${rootName}${i}.jpg`;
         img.alt = rootName;
         container.appendChild(img);
       }
