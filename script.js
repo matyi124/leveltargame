@@ -13,6 +13,7 @@ let tplDescriptors = {};  // { name: cv.Mat }
 
 cv['onRuntimeInitialized'] = () => {
   console.log('🥳 OpenCV ready (ORB)');
+  document.getElementById('loader').style.display = 'none'; //
   setupUI();
   initCamera();
   initORB();
@@ -53,7 +54,6 @@ function initCamera() {
         video.play();
         streamReady = true;
         startButton.disabled = false;
-        result.textContent = '✓ Kamera kész, kattints a gombra.';
       };
     })
     .catch(err => {

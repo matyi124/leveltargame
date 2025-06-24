@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>🎺 Találd meg a hangszert! V12</h1>
+  <h1>🎺 Találd meg a hangszert! V13</h1>
 
   <video id="video" width="320" height="240" autoplay muted playsinline></video>
   <style>
@@ -21,18 +21,45 @@
     cursor: not-allowed;
   }
 </style>
-  <button id="startButton" disabled>Kép készítés és felismerés</button>
-  <p id="result">Várakozás a kamerára…</p>
+  <button id="startButton" disabled>Kép készítés</button>
+  <div id="loader" style="margin:10px; font-size:16px; color:#888;">⏳ Betöltés...</div>
+  <div id="progressBarContainer" style="width: 80%; margin: 10px auto; background: #eee; border-radius: 10px; height: 20px;">
+  <div id="progressBar" style="width: 0%; height: 100%; background: #4caf50; border-radius: 10px;"></div>
+</div>
+  <p id="result"></p>
   <p id="progressText"
    style="font-size:16px; color:#333; margin:10px 0; display:none;"
 ></p>
   <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
- 
+ <style>
+  #loader {
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+
+  }
+</style>
+
+<style>
+  #progressBarContainer {
+  transition: all 0.3s ease;
+}
+#progressBar {
+  transition: width 0.3s ease;
+}
+</style>
+
  
   <div id="templateContainer" style="display:none;"></div>
 
   <script>
     // 1) Ide sorold fel, mely mappákban hány képed van
+    const container = document.getElementById('templateContainer');
+
     const templateConfig = {
       citeraAllo: 9,
       citeraAlloKicsi: 7,
@@ -44,16 +71,33 @@
      };
 
    
-    const container = document.getElementById('templateContainer');
-    for (const [rootName, count] of Object.entries(templateConfig)) {
-      for (let i = 1; i <= count; i++) {
-        const img = document.createElement('img');
-        img.id  = `tmpl_${rootName}_${i}`;
-        img.src = `Hangszerek/${rootName}/${rootName}${i}.jpg`;
-        img.alt = rootName;
-        container.appendChild(img);
+   const totalImages = Object.values(templateConfig).reduce((sum, count) => sum + count, 0);
+let loadedImages = 0;
+
+for (const [rootName, count] of Object.entries(templateConfig)) {
+  for (let i = 1; i <= count; i++) {
+    const img = document.createElement('img');
+    img.id  = `tmpl_${rootName}_${i}`;
+    img.src = `Hangszerek/${rootName}/${rootName}${i}.jpg`;
+    img.alt = rootName;
+
+    img.onload = () => {
+      loadedImages++;
+      const percent = Math.round((loadedImages / totalImages) * 100);
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressText').textContent = percent + '%';
+
+      if (loadedImages === totalImages) {
+        // Képek betöltve → elrejtjük a jelzőket
+        document.getElementById('progressBarContainer').style.display = 'none';
+        document.getElementById('progressText').style.display = 'none';
       }
-    }
+    };
+
+    container.appendChild(img);
+  }
+}
+
 
     // 3) A sablon-változót is ebből építjük fel
     const sablonok = [];
