@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hangszer Vadászat</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    video, canvas { margin: 10px auto; display: block; }
+    #result { font-size: 20px; color: green; margin-top: 20px; }
+    #startButton { font-size: 16px; padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <h1>🎺 Találd meg a hangszert! V8</h1>
+
+  <video id="video" width="320" height="240" autoplay muted playsinline></video>
+  <style>
+  #startButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+  <button id="startButton" disabled>Kép készítés és felismerés</button>
+  <p id="result">Várakozás a kamerára…</p>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+ <!-- ide tesszük majd a képeket -->
+  <div id="templateContainer" style="display:none;"></div>
+
+  <script>
+    // 1) Ide sorold fel, mely mappákban hány képed van
+    const templateConfig = {
+      citeraAllo: 9,
+      citeraAlloKicsi: 7,
+      citeraKicsi: 7,
+      gitar:      5,
+      harmonika:  6,
+      kurt:       6,
+      szarvaskurt:  6
+     };
+
+    // 2) Dinamikus img-elem generálás
+    const container = document.getElementById('templateContainer');
+    for (const [rootName, count] of Object.entries(templateConfig)) {
+      for (let i = 1; i <= count; i++) {
+        const img = document.createElement('img');
+        img.id  = `tmpl_${rootName}_${i}`;
+        img.src = `Hangszer/${rootName}/${rootName}${i}.jpg`;
+        img.alt = rootName;
+        container.appendChild(img);
+      }
+    }
+
+    // 3) A sablon-változót is ebből építjük fel
+    const sablonok = [];
+    for (const img of container.querySelectorAll('img')) {
+      sablonok.push({
+        name: img.alt.replace(/([A-Z])/g, ' $1').trim(), // pl. "citeraAllo" → "citera Allo"
+        element: img
+      });
+    }
+  </script>
+
+  <!-- Előbb OpenCV, aztán a scriptünk (klasszikus, nem defer) -->
+  <script src="https://docs.opencv.org/4.x/opencv.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -30,19 +30,21 @@ function setupUI() {
   startButton.disabled = true;
   startButton.addEventListener('click', captureAndMatch);
 
-  // sablon‐objektumok betöltése
-  const ids = [
-    'templateCiterakicsi','templateCiterakicsi1','templateCiterakicsi2',
-    'templateCiteranagy','templateCiteranagy1','templateCiteranagy2','templateCiteranagy3','templateCiteranagy4',
-    'templateGitar',
-    'templateHarmonika','templateHarmonika1','templateHarmonika2',
-    'templateKurt','templateKurt1','templateKurt2'
-  ];
-  ids.forEach(id => sablonok.push({
-    name: id.replace('template',''),
-    element: document.getElementById(id)
-  }));
-}
+  const sablonok = Array.from(
+  document.querySelectorAll('#templateContainer img')
+).map(img => {
+  // img.id például 'tmpl_citeraAllo_1'
+  const parts = img.id.split('_');        // ['tmpl','citeraAllo','1']
+  parts.shift();                          // eltávolítjuk a 'tmpl' prefixet
+  const rawName = parts.slice(0, -1).join('_'); // ['citeraAllo']
+  // csinálunk belőle emberi nevet: 'citera Allo'
+  const name = rawName
+    .replace(/([A-Z])/g, ' $1')           // camelCase → szavak közé szóköz
+    .replace(/^./, s => s.toUpperCase()); // nagybetű az elején
+
+  return { name, element: img };
+});
+
 
 function initCamera() {
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
