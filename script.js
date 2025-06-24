@@ -1,87 +1,58 @@
-// script.js
-console.log('📝 script.js betöltve');
+// script.js – ORB verzió
 
-let startButton;
+console.log('📝 script.js (ORB) betöltve');
 
-class HangszerSablon {
-  constructor(name, elementId) {
-    this.name    = name;
-    this.element = document.getElementById(elementId);
-    if (!this.element) {
-      console.error(`❌ Hiányzó kép sablonhoz: id="${elementId}"`);
-    }
-  }
-  beolvasottMatrix() {
-    const el = this.element;
-    if (!el.complete) {
-      throw new Error(`Kép nem töltődött be: ${el.id}`);
-    }
-    let mat = cv.imread(el);
-    cv.cvtColor(mat, mat, cv.COLOR_RGBA2GRAY);
-    cv.GaussianBlur(mat, mat, new cv.Size(5,5), 0);
-    return mat;
-  }
-}
-
-// Globális változók
-let video, canvas, context, result, wait;
-const sablonok = [
-  new HangszerSablon("Citera Kicsi",   "templateCiterakicsi"),
-  new HangszerSablon("Citera Kicsi1",  "templateCiterakicsi1"),
-  new HangszerSablon("Citera Kicsi2",  "templateCiterakicsi2"),
-  new HangszerSablon("Citera Nagy",    "templateCiteranagy"),
-  new HangszerSablon("Citera Nagy1",   "templateCiteranagy1"),
-  new HangszerSablon("Citera Nagy2",   "templateCiteranagy2"),
-  new HangszerSablon("Citera Nagy3",   "templateCiteranagy3"),
-  new HangszerSablon("Citera Nagy4",   "templateCiteranagy4"),
-  new HangszerSablon("Gitár",          "templateGitar"),
-  new HangszerSablon("Harmonika",      "templateHarmonika"),
-  new HangszerSablon("Harmonika1",     "templateHarmonika1"),
-  new HangszerSablon("Harmonika2",     "templateHarmonika2"),
-  new HangszerSablon("Kürt",           "templateKurt"),
-  new HangszerSablon("Kürt1",          "templateKurt1"),
-  new HangszerSablon("Kürt2",          "templateKurt2"),
-];
-
+let video, canvas, context, result, startButton;
 let streamReady = false;
-const THRESHOLD = 0.5;
 
-// Ez a callback jön be, amikor az opencv.js runtime készen áll
+// ORB és BFMatcher global
+let orb, bf;
+
+// Sablon‐adatok tárolása
+let sablonok = [];        // HangszerSablon objektumok
+let tplKeypoints = {};    // { name: cv.KeyPointVector }
+let tplDescriptors = {};  // { name: cv.Mat }
+
 cv['onRuntimeInitialized'] = () => {
-  console.log('🥳 OpenCV ready');
+  console.log('🥳 OpenCV ready (ORB)');
   setupUI();
   initCamera();
+  initORB();
 };
 
 function setupUI() {
-  console.log('⚙️ setupUI');
   video       = document.getElementById('video');
   canvas      = document.getElementById('canvas');
-  context     = canvas.getContext('2d', { willReadFrequently:true });
+  context     = canvas.getContext('2d');
   result      = document.getElementById('result');
   startButton = document.getElementById('startButton');
-  wait        = document.getElementById('wait');
 
-  if (!startButton) {
-    console.error('❌ Nincs startButton!');
-    return;
-  }
-
-  startButton.disabled = true; 
+  startButton.disabled = true;
   startButton.addEventListener('click', captureAndMatch);
+
+  // sablon‐objektumok betöltése
+  const ids = [
+    'templateCiterakicsi','templateCiterakicsi1','templateCiterakicsi2',
+    'templateCiteranagy','templateCiteranagy1','templateCiteranagy2','templateCiteranagy3','templateCiteranagy4',
+    'templateGitar',
+    'templateHarmonika','templateHarmonika1','templateHarmonika2',
+    'templateKurt','templateKurt1','templateKurt2'
+  ];
+  ids.forEach(id => sablonok.push({
+    name: id.replace('template',''),
+    element: document.getElementById(id)
+  }));
 }
 
 function initCamera() {
-  console.log('📸 initCamera');
-  startButton.disabled = true;
-  navigator.mediaDevices.getUserMedia({ video: { facingMode:'environment' }})
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     .then(stream => {
       video.srcObject = stream;
       video.onloadedmetadata = () => {
-        console.log('▶️ Kamera elindult');
+        video.play();
         streamReady = true;
         startButton.disabled = false;
-        result.textContent = 'Kamera készen, kattints a gombra!';
+        result.textContent = '✓ Kamera kész, kattints a gombra.';
       };
     })
     .catch(err => {
@@ -90,63 +61,81 @@ function initCamera() {
     });
 }
 
+function initORB() {
+  console.log('🔧 init ORB + BFMatcher');
+  orb = new cv.ORB();
+  bf  = new cv.BFMatcher(cv.NORM_HAMMING, false);
+
+  // Előfeldolgozás: minden sablonhoz kiszámoljuk a kp+descriptort
+  sablonok.forEach(s => {
+    const imgEl = s.element;
+    if (!imgEl || !imgEl.complete) {
+      console.warn(`⚠️ Sablon nem betöltve: ${s.name}`);
+      return;
+    }
+    let tpl = cv.imread(imgEl);
+    cv.cvtColor(tpl, tpl, cv.COLOR_RGBA2GRAY);
+    let kp = new cv.KeyPointVector(), desc = new cv.Mat();
+    orb.detectAndCompute(tpl, new cv.Mat(), kp, desc);
+    tpl.delete();
+
+    tplKeypoints[s.name] = kp;
+    tplDescriptors[s.name] = desc;
+    console.log(`📦 Sablon előfeldolgozva: ${s.name}, kp=${kp.size()}, desc=${desc.rows}×${desc.cols}`);
+  });
+}
+
 async function captureAndMatch() {
-  console.log('🕵️ captureAndMatch invoked, streamReady=', streamReady);
-  if (streamReady) {
-    startButton.disabled = true;
-    result.innerHTML = '<em>⏳ feldolgozás…</em>';
-    console.log("feldolgozás");
-  }
-  if (!streamReady) {
-    result.innerHTML = '<em>⏳ Kamera még nem állt készen.</em>';
-    startButton.disabled = false;
-    return;
-  }
-
-await new Promise(resolve => setTimeout(resolve, 0));
-
-  // veszi a képet
+  if (!streamReady) return;
+  // 1) beolvasás
   canvas.width  = video.videoWidth;
   canvas.height = video.videoHeight;
-  context.drawImage(video, 0, 0);
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  result.innerHTML = '<em>⏳ Feldolgozás…</em>';
 
+  // 2) frame előkészítés
   let src = cv.imread(canvas);
   cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY);
-  cv.GaussianBlur(src, src, new cv.Size(5,5), 0);
 
-  let found = null;
-  result.innerHTML = '';  // ürítjük, ha részleteket is kiírnál
+  // 3) frame kp+desc
+  let kpSrc = new cv.KeyPointVector(), descSrc = new cv.Mat();
+  orb.detectAndCompute(src, new cv.Mat(), kpSrc, descSrc);
 
-  for (let sablon of sablonok) {
-    try {
-      let tpl = sablon.beolvasottMatrix();
-      let dst = new cv.Mat();
-      cv.matchTemplate(src, tpl, dst, cv.TM_CCOEFF_NORMED);
-      let { maxVal } = cv.minMaxLoc(dst);
-      console.log(`💡 ${sablon.name}:`, maxVal.toFixed(3));
+  // 4) minden sablonnal match
+  let best = { name:null, matches:0 };
+  sablonok.forEach(s => {
+    const name = s.name;
+    const descTpl = tplDescriptors[name];
+    if (!descTpl || descTpl.empty() || descSrc.empty()) return;
 
-      // opcionálisan részletek:
-      // result.innerHTML += `${sablon.name}: ${maxVal.toFixed(3)}<br>`;
+    // KNN‐match, ratio‐test
+    let matches = new cv.DMatchVectorVector();
+    bf.knnMatch(descTpl, descSrc, matches, 2);
 
-      if (maxVal > THRESHOLD && !found) {
-        found = sablon.name;
-      }
-      tpl.delete(); dst.delete();
-    } catch (err) {
-      console.warn(`⚠️ Sablon hiba (${sablon.name}):`, err.message);
+    let good = 0;
+    for (let i = 0; i < matches.size(); i++) {
+      const m = matches.get(i).get(0);
+      const n = matches.get(i).get(1);
+      if (m.distance < 0.75 * n.distance) good++;
     }
-  }
-  src.delete();
 
-  if (found) {
-    result.innerHTML = `<strong>✅ Felismert hangszer: ${found}!</strong>`;
+    console.log(`🔍 ${name}: good matches =`, good);
+    if (good > best.matches) {
+      best = { name, matches: good };
+    }
+
+    matches.delete();
+  });
+
+  // 5) eredmény kiírás
+  if (best.name) {
+    result.innerHTML = `✅ Felismert hangszer: <b>${best.name}</b> (${best.matches} match)`;
   } else {
-    result.innerHTML = `<strong>❌ Nem található hangszer.</strong>`;
+    result.innerHTML = `❌ Nem található hangszer.`;
   }
 
-result.style.display = 'block';
-result.scrollIntoView({ behavior: 'smooth' });
-
-  startButton.disabled = false;
-  console.log('✅ captureAndMatch done');
+  // 6) tisztítás
+  src.delete();
+  kpSrc.delete();
+  descSrc.delete();
 }
