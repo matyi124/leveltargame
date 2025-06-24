@@ -2,42 +2,50 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hangszer Vadászat</title>
   <style>
     body { font-family: sans-serif; text-align: center; }
     video, canvas { margin: 10px auto; display: block; }
     #result { font-size: 20px; color: green; margin-top: 20px; }
-    #captureBtn { font-size: 16px; padding: 8px 16px; }
+    #startButton { font-size: 16px; padding: 8px 16px; }
   </style>
 </head>
 <body>
   <h1>🎺 Találd meg a hangszert! V5</h1>
-  <video id="video" width="320" height="240" autoplay muted></video>
-  <button id="captureBtn" disabled>Kép készítés és felismerés</button>
+
+  <video id="video" width="320" height="240" autoplay muted playsinline></video>
+  <style>
+  #startButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+  <button id="startButton" disabled>Kép készítés és felismerés</button>
   <p id="result">Várakozás a kamerára…</p>
   <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
-  <!-- Template képek (mindegyiket láthatatlanná tesszük) -->
-  <img id="templateCiterakicsi"  src="citeraKicsi.png"  style="visibility:hidden;">
-  <img id="templateCiterakicsi1" src="citeraKicsi1.png" style="visibility:hidden;">
-  <img id="templateCiterakicsi2" src="citeraKicsi2.png" style="visibility:hidden;">
-  <img id="templateCiteranagy"   src="citeraNagy.png"  style="visibility:hidden;">
-  <img id="templateCiteranagy1"  src="citeraNagy1.png" style="visibility:hidden;">
-  <img id="templateCiteranagy2"  src="citeraNagy2.png" style="visibility:hidden;">
-  <img id="templateCiteranagy3"  src="citeraNagy3.png" style="visibility:hidden;">
-  <img id="templateCiteranagy4"  src="citeraNagy4.png" style="visibility:hidden;">
-  <img id="templateGitar"        src="gitar.png"       style="visibility:hidden;">
-  <img id="templateHarmonika"    src="harmonika.png"   style="visibility:hidden;">
-  <img id="templateHarmonika1"   src="harmonika1.png"  style="visibility:hidden;">
-  <img id="templateHarmonika2"   src="harmonika2.png"  style="visibility:hidden;">
-  <img id="templateKurt"         src="kurt.png"        style="visibility:hidden;">
-  <img id="templateKurt1"        src="kurt1.png"       style="visibility:hidden;">
-  <img id="templateKurt2"        src="kurt2.png"       style="visibility:hidden;">
+  <!-- Template képek, display:none, hogy ne foglaljanak helyet -->
+  <div style="display:none">
+    <img id="templateCiterakicsi"  src="citeraKicsi.png">
+    <img id="templateCiterakicsi1" src="citeraKicsi1.png">
+    <img id="templateCiterakicsi2" src="citeraKicsi2.png">
+    <img id="templateCiteranagy"   src="citeraNagy.png">
+    <img id="templateCiteranagy1"  src="citeraNagy1.png">
+    <img id="templateCiteranagy2"  src="citeraNagy2.png">
+    <img id="templateCiteranagy3"  src="citeraNagy3.png">
+    <img id="templateCiteranagy4"  src="citeraNagy4.png">
+    <img id="templateGitar"        src="gitar.png">
+    <img id="templateHarmonika"    src="harmonika.png">
+    <img id="templateHarmonika1"   src="harmonika1.png">
+    <img id="templateHarmonika2"   src="harmonika2.png">
+    <img id="templateKurt"         src="kurt.png">
+    <img id="templateKurt1"        src="kurt1.png">
+    <img id="templateKurt2"        src="kurt2.png">
+  </div>
 
-
-  <!-- OpenCV.js betöltése -->
+  <!-- Előbb OpenCV, aztán a scriptünk (klasszikus, nem defer) -->
   <script src="https://docs.opencv.org/4.x/opencv.js"></script>
-<script defer src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
