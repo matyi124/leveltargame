@@ -1,6 +1,6 @@
-// script.js – ORB verzió
 
 console.log('📝 script.js (ORB) betöltve');
+
 
 let video, canvas, context, result, startButton;
 let streamReady = false;
@@ -8,12 +8,12 @@ let orbInited = false;
 
 let orb, bf;
 
-let tplKeypoints = {};    // { name: cv.KeyPointVector }
-let tplDescriptors = {};  // { name: cv.Mat }
+let tplKeypoints = {};   
+let tplDescriptors = {};  
 
 cv['onRuntimeInitialized'] = () => {
   console.log('🥳 OpenCV ready (ORB)');
-  document.getElementById('loader').style.display = 'none'; //
+  document.getElementById('loader').style.display = 'none'; 
   setupUI();
   initCamera();
   initORB();
@@ -33,14 +33,14 @@ function setupUI() {
   const sablonok = Array.from(
   document.querySelectorAll('#templateContainer img')
 ).map(img => {
-  // img.id például 'tmpl_citeraAllo_1'
-  const parts = img.id.split('_');        // ['tmpl','citeraAllo','1']
-  parts.shift();                          // eltávolítjuk a 'tmpl' prefixet
-  const rawName = parts.slice(0, -1).join('_'); // ['citeraAllo']
-  // csinálunk belőle emberi nevet: 'citera Allo'
+ 
+  const parts = img.id.split('_');        
+  parts.shift();                         
+  const rawName = parts.slice(0, -1).join('_'); 
+  
   const name = rawName
-    .replace(/([A-Z])/g, ' $1')           // camelCase → szavak közé szóköz
-    .replace(/^./, s => s.toUpperCase()); // nagybetű az elején
+    .replace(/([A-Z])/g, ' $1')           
+    .replace(/^./, s => s.toUpperCase()); 
 
   return { name, element: img };
 })
@@ -57,8 +57,8 @@ function initCamera() {
       };
     })
     .catch(err => {
-      console.error('🚨 Kamera hiba:', err);
-      result.textContent = '🚨 Nem sikerült a kamera.';
+      console.error('Kamera hiba:', err);
+      result.textContent = 'Nem sikerült a kamerát elérni.';
     });
 }
 
@@ -67,7 +67,7 @@ function initORB() {
   orb = new cv.ORB();
   bf  = new cv.BFMatcher(cv.NORM_HAMMING, false);
 
-  // Előfeldolgozás: minden sablonhoz kiszámoljuk a kp+descriptort
+  // Előfeldolgozás
   sablonok.forEach(s => {
     const imgEl = s.element;
     if (!imgEl || !imgEl.complete) {
@@ -90,10 +90,7 @@ function initORB() {
 async function captureAndMatch() {
 
   if (!streamReady) return;
-  if (!orbInited) {
-    await ensureORBInit();
-    return;  // csak az init ment, most még ne csináljunk felismerést
-  }
+  
 
   canvas.width  = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -134,14 +131,12 @@ async function captureAndMatch() {
     matches.delete();
   });
 
-  // 5) eredmény kiírás
   if (best.name) {
     result.innerHTML = `✅ Felismert hangszer: <b>${best.name}</b> (${best.matches} match)`;
   } else {
     result.innerHTML = `❌ Nem található hangszer.`;
   }
 
-  // 6) tisztítás
   src.delete();
   kpSrc.delete();
   descSrc.delete();

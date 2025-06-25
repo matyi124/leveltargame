@@ -12,7 +12,8 @@
   </style>
 </head>
 <body>
-  <h1>🎺 Találd meg a hangszert! V13</h1>
+
+  <h1>🎺 Találd meg a hangszert! V14</h1>
 
   <video id="video" width="320" height="240" autoplay muted playsinline></video>
   <style>
@@ -35,12 +36,10 @@
   #loader {
     animation: pulse 1s infinite;
   }
-
   @keyframes pulse {
     0% { opacity: 0.4; }
     50% { opacity: 1; }
     100% { opacity: 0.4; }
-
   }
 </style>
 
@@ -53,11 +52,9 @@
 }
 </style>
 
- 
   <div id="templateContainer" style="display:none;"></div>
 
   <script>
-    // 1) Ide sorold fel, mely mappákban hány képed van
     const container = document.getElementById('templateContainer');
 
     const templateConfig = {
@@ -98,8 +95,6 @@ for (const [rootName, count] of Object.entries(templateConfig)) {
   }
 }
 
-
-    // 3) A sablon-változót is ebből építjük fel
     const sablonok = [];
     for (const img of container.querySelectorAll('img')) {
       sablonok.push({
@@ -112,5 +107,35 @@ for (const [rootName, count] of Object.entries(templateConfig)) {
   <!-- Előbb OpenCV, aztán a scriptünk (klasszikus, nem defer) -->
   <script src="https://docs.opencv.org/4.x/opencv.js"></script>
   <script src="script.js"></script>
+
+  <div id="popupOverlay" style="
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div id="popupBox" style="
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 300px;
+    text-align: center;
+  ">
+    <p>"időhúzószöveg itt!!"</p>
+   <button id="popupCloseBtn">OK</button>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('popupCloseBtn').addEventListener('click', () => {
+      document.getElementById('popupOverlay').style.display = 'none';
+    });
+  });
+</script>
+
 </body>
 </html>
