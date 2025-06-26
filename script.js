@@ -1,4 +1,3 @@
-console.log('📝 script.js (ORB) betöltve');
 let video, canvas, context, result, startButton;
 let streamReady = false; 
 initModel();
@@ -50,3 +49,10 @@ async function captureAndMatch() {
     document.getElementById("result").textContent = `Találat: ${result.className} (${(result.probability * 100).toFixed(1)}%)`;
   };
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadModel();
+  setupUI();
+  initCamera();
+});
+
