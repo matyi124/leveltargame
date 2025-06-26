@@ -18,6 +18,7 @@ const sablonok = [];
 for (const [rootName, count] of Object.entries(templateConfig)) {
   for (let i = 1; i <= count; i++) {
     const img = document.createElement('img');
+    img.crossOrigin = "anonymous"; 
     img.id  = `tmpl_${rootName}_${i}`;
     img.src = `https://pub-c41dc5fd9be94194a2a1403d44d25bc0.r2.dev/Hangszerek/${rootName}/${rootName}${i}.jpg`;
     img.alt = rootName;

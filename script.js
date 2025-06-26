@@ -8,7 +8,6 @@ let tplDescriptors = {};
 
 cv['onRuntimeInitialized'] = () => {
   console.log('OpenCV ready (ORB)');
-  document.getElementById('loader').style.display = 'none'; 
   setupUI();
   initCamera();
   initORB();
