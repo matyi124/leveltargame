@@ -46,18 +46,25 @@ function initCamera() {
     });
 }
 
-function initORB() {
+async function initORB() {
   console.log('🔧 init ORB + BFMatcher');
   orb = new cv.ORB();
   bf  = new cv.BFMatcher(cv.NORM_HAMMING, false);
 
-  // Előfeldolgozás
-  sablonok.forEach(s => {
+  const progressText = document.getElementById('progressText');
+  const progressBar  = document.getElementById('progressBar');
+  const startButton  = document.getElementById('startButton');
+
+  let total = sablonok.length;
+  for (let i = 0; i < total; i++) {
+    const s = sablonok[i];
     const imgEl = s.element;
+
     if (!imgEl || !imgEl.complete) {
       console.warn(`⚠️ Sablon nem betöltve: ${s.name}`);
-      return;
+      continue;
     }
+
     let tpl = cv.imread(imgEl);
     cv.cvtColor(tpl, tpl, cv.COLOR_RGBA2GRAY);
     let kp = new cv.KeyPointVector(), desc = new cv.Mat();
@@ -66,9 +73,28 @@ function initORB() {
 
     tplKeypoints[s.name] = kp;
     tplDescriptors[s.name] = desc;
-    console.log(`📦 Sablon előfeldolgozva: ${s.name}, kp=${kp.size()}, desc=${desc.rows}×${desc.cols}`);
-  });
+
+    const percent = Math.round(((i + 1) / total) * 100);
+    progressBar.style.width = percent + '%';
+    progressText.textContent = `${percent}%`;
+
+    await new Promise(resolve => setTimeout(resolve, 50)); // hogy a UI is frissüljön
+  }
+
+  // Rejtsük el a betöltő sávot
+  document.getElementById('progressBarContainer').style.display = 'none';
+  progressText.style.display = 'none';
+
+  // Popup eltüntetése csak most!
+  document.getElementById('popupOverlay').style.display = 'none';
+
+  // Kamera gomb engedélyezése
+  startButton.disabled = false;
+
+  orbInited = true;
+  console.log('✅ ORB sablonok inicializálva');
 }
+
 
 
 async function captureAndMatch() {
