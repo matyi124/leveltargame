@@ -88,57 +88,59 @@ function initORB() {
 
 
 async function captureAndMatch() {
-
   if (!streamReady) return;
-  
 
-  canvas.width  = video.videoWidth;
-  canvas.height = video.videoHeight;
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  result.innerHTML = '<em>⏳ Feldolgozás…</em>';
+  let bestOverall = { name: null, matches: 0 };
 
-  // 2) frame előkészítés
-  let src = cv.imread(canvas);
-  cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY);
+  for (let i = 0; i < 3; i++) {
+    await new Promise(resolve => setTimeout(resolve, 150)); // 150ms szünet a képkockák között
 
-  // 3) frame kp+desc
-  let kpSrc = new cv.KeyPointVector(), descSrc = new cv.Mat();
-  orb.detectAndCompute(src, new cv.Mat(), kpSrc, descSrc);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    result.innerHTML = `<em>⏳ Feldolgozás (${i + 1}/3)…</em>`;
 
-  // 4) minden sablonnal match
-  let best = { name:null, matches:0 };
-  sablonok.forEach(s => {
-    const name = s.name;
-    const descTpl = tplDescriptors[name];
-    if (!descTpl || descTpl.empty() || descSrc.empty()) return;
+    let src = cv.imread(canvas);
+    cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY);
 
-    // KNN‐match, ratio‐test
-    let matches = new cv.DMatchVectorVector();
-    bf.knnMatch(descTpl, descSrc, matches, 2);
+    let kpSrc = new cv.KeyPointVector(), descSrc = new cv.Mat();
+    orb.detectAndCompute(src, new cv.Mat(), kpSrc, descSrc);
 
-    let good = 0;
-    for (let i = 0; i < matches.size(); i++) {
-      const m = matches.get(i).get(0);
-      const n = matches.get(i).get(1);
-      if (m.distance < 0.75 * n.distance) good++;
+    let best = { name: null, matches: 0 };
+    sablonok.forEach(s => {
+      const name = s.name;
+      const descTpl = tplDescriptors[name];
+      if (!descTpl || descTpl.empty() || descSrc.empty()) return;
+
+      let matches = new cv.DMatchVectorVector();
+      bf.knnMatch(descTpl, descSrc, matches, 2);
+
+      let good = 0;
+      for (let i = 0; i < matches.size(); i++) {
+        const m = matches.get(i).get(0);
+        const n = matches.get(i).get(1);
+        if (m.distance < 0.6 * n.distance) good++;
+      }
+
+      if (good > best.matches) {
+        best = { name, matches: good };
+      }
+
+      matches.delete();
+    });
+
+    if (best.matches > bestOverall.matches) {
+      bestOverall = best;
     }
 
-    console.log(`🔍 ${name}: good matches =`, good);
-    if (good > best.matches) {
-      best = { name, matches: good };
-    }
+    src.delete();
+    kpSrc.delete();
+    descSrc.delete();
+  }
 
-    matches.delete();
-  });
-
-  if (best.name) {
-    result.innerHTML = `✅ Felismert hangszer: <b>${best.name}</b> (${best.matches} match)`;
+  if (bestOverall.name) {
+    result.innerHTML = `✅ Felismert hangszer: <b>${bestOverall.name}</b> (${bestOverall.matches} match)`;
   } else {
     result.innerHTML = `❌ Nem található hangszer.`;
   }
-
-  src.delete();
-  kpSrc.delete();
-  descSrc.delete();
 }
-
