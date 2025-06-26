@@ -1,13 +1,13 @@
 const container = document.getElementById('templateContainer');
 const templateConfig = {
-  citeraAllo: 9,
-  csengo:    3,
-  dob:        4,
-  furulya:    3,
-  gitar:      5,
-  harmonika:  5,
-  kolomp:     5,
-  szarvaskurt:  5
+  citeraAllo: 24,
+  csengo:    23,
+  dob:        21,
+  furulya:    30,
+  gitar:      30,
+  harmonika:  37,
+  kolomp:     31,
+  szarvaskurt:  30
 };
 
 const totalImages = Object.values(templateConfig).reduce((sum, count) => sum + count, 0);
