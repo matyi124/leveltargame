@@ -1,11 +1,8 @@
 let video, canvas, context, result, startButton;
 let streamReady = false; 
-initModel();
 
 function setupUI() {
   video       = document.getElementById('video');
-  canvas      = document.getElementById('canvas');
-  context     = canvas.getContext('2d');
   result      = document.getElementById('result');
   startButton = document.getElementById('startButton');
 
