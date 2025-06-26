@@ -1,151 +1,44 @@
 <!DOCTYPE html>
 <html lang="hu">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hangszer Vadászat</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; }
-    video, canvas { margin: 10px auto; display: block; }
-    #result { font-size: 20px; color: green; margin-top: 20px; }
-    #startButton { font-size: 16px; padding: 8px 16px; }
-  </style>
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hangszer Vadászat</title>
+  </head>
+  <body>
 
-  <h1>🎺 Találd meg a hangszert! V10.7</h1>
+    <h1>Találd meg a hangszert! V10.7</h1>
 
-  <video id="video" width="320" height="240" autoplay muted playsinline></video>
-  <style>
-  #startButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-</style>
-  <button id="startButton" disabled>Kép készítés</button>
-  <div id="loader" style="margin:10px; font-size:16px; color:#888;">⏳ Betöltés...</div>
-  <div id="progressBarContainer" style="width: 80%; margin: 10px auto; background: #eee; border-radius: 10px; height: 20px;">
-  <div id="progressBar" style="width: 0%; height: 100%; background: #4caf50; border-radius: 10px;"></div>
-</div>
-  <p id="result"></p>
-  <p id="progressText"
-   style="font-size:16px; color:#333; margin:10px 0; display:none;"
-></p>
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
- <style>
-  #loader {
-    animation: pulse 1s infinite;
-  }
-  @keyframes pulse {
-    0% { opacity: 0.4; }
-    50% { opacity: 1; }
-    100% { opacity: 0.4; }
-  }
-</style>
+    <video id="video" width="320" height="240" autoplay muted playsinline></video>
 
-<style>
-  #progressBarContainer {
-  transition: all 0.3s ease;
-}
-#progressBar {
-  transition: width 0.3s ease;
-}
-</style>
+    <button id="startButton" disabled>Kép készítés</button>
+    <div id="progressBarContainer">
+    <div id="progressBar"></div>
+    </div>
+    <p id="result"></p>
+    <p id="progressText"></p>
+    <canvas id="canvas" width="320" height="240"></canvas>
+    <div id="templateContainer"></div>
 
-  <div id="templateContainer" style="display:none;"></div>
-
-  <script>
-    const container = document.getElementById('templateContainer');
-
-    const templateConfig = {
-      citeraAllo: 9,
-      csengo:    3,
-      dob:        4,
-      furulya:    3,
-      gitar:      5,
-      harmonika:  5,
-      kolomp:     5,
-      szarvaskurt:  5
-     };
-
-   
-   const totalImages = Object.values(templateConfig).reduce((sum, count) => sum + count, 0);
-let loadedImages = 0;
-
-for (const [rootName, count] of Object.entries(templateConfig)) {
-  for (let i = 1; i <= count; i++) {
-    const img = document.createElement('img');
-    img.id  = `tmpl_${rootName}_${i}`;
-    img.src = `https://pub-c41dc5fd9be94194a2a1403d44d25bc0.r2.dev/Hangszerek/${rootName}/${rootName}${i}.jpg`;
-    img.alt = rootName;
-
-    img.onload = () => {
-      console.log(`📦 Sablon betöltve: ${rootName}${i}`); 
-      loadedImages++;
-      const percent = Math.round((loadedImages / totalImages) * 100);
-      document.getElementById('progressBar').style.width = percent + '%';
-      document.getElementById('progressText').textContent = percent + '%';
-
-      if (loadedImages === totalImages) {
-        document.getElementById('progressBarContainer').style.display = 'none';
-        document.getElementById('progressText').style.display = 'none';
-      }
-    };
-
-    container.appendChild(img);
-  }
-}
+    <script src="https://docs.opencv.org/4.x/opencv.js"></script>
+    <script src="templateLoader.js"></script>
+    <script src="script.js"></script>
 
 
-    const sablonok = [];
-    for (const img of container.querySelectorAll('img')) {
-      sablonok.push({
-        name: img.alt.replace(/([A-Z])/g, ' $1').trim(), // pl. "citeraAllo" → "citera Allo"
-        element: img
-      });
-    }
-  </script>
-
-  <!-- Előbb OpenCV, aztán a scriptünk (klasszikus, nem defer) -->
-  <script src="https://docs.opencv.org/4.x/opencv.js"></script>
-  <script src="script.js"></script>
-
-  <div id="popupOverlay" style="
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-">
-  <div id="popupBox" style="
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 300px;
-    text-align: center;
-  ">
-    <p>időhúzószöveg itt!!
-    <br>A játék célja, hogy megtalálj minden hangszert a megadott időn belül
-    <br>A játék során a kamera segítségével kell azonosítanod a hangszereket
-    <br>A játék végén a pontszámodat fogod látni, ami a megtalált hangszerek számától függ
-    <br>blablablablablablablablablablablablablablablablablablablablabla
-    <br>még valamit ide ki kell találni hogy húzzuk az időt
-    <br>megha hajlandó volna működni ez a vacak végre!!!!!!!
-    <br>Jó szórakozást kívánunk!   
-    </p>
-   <button id="popupCloseBtn">OK</button>
-  </div>
-</div>
-
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('popupCloseBtn').addEventListener('click', () => {
-      document.getElementById('popupOverlay').style.display = 'none';
-    });
-  });
-</script>
-
-</body>
+    <div id="popupOverlay">
+    <div id="popupBox">
+        <p>időhúzószöveg itt!!
+        <br>A játék célja, hogy megtalálj minden hangszert a megadott időn belül
+        <br>A játék során a kamera segítségével kell azonosítanod a hangszereket
+        <br>A játék végén a pontszámodat fogod látni, ami a megtalált hangszerek számától függ
+        <br>blablablablablablablablablablablablablablablablablablablablabla
+        <br>még valamit ide ki kell találni hogy húzzuk az időt
+        <br>megha hajlandó volna működni ez a vacak végre!!!!!!!
+        <br>Jó szórakozást kívánunk!   
+        </p>
+      <button id="popupCloseBtn">OK</button>
+      </div>
+    </div>
+  </body>
 </html>

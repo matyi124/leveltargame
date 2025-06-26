@@ -1,18 +1,13 @@
-
 console.log('📝 script.js (ORB) betöltve');
-
-
 let video, canvas, context, result, startButton;
 let streamReady = false;
 let orbInited = false;
-
 let orb, bf;
-
 let tplKeypoints = {};   
 let tplDescriptors = {};  
 
 cv['onRuntimeInitialized'] = () => {
-  console.log('🥳 OpenCV ready (ORB)');
+  console.log('OpenCV ready (ORB)');
   document.getElementById('loader').style.display = 'none'; 
   setupUI();
   initCamera();
@@ -47,7 +42,7 @@ function initCamera() {
 }
 
 async function initORB() {
-  console.log('🔧 init ORB + BFMatcher');
+  console.log('init ORB + BFMatcher');
   orb = new cv.ORB();
   bf  = new cv.BFMatcher(cv.NORM_HAMMING, false);
 
@@ -61,7 +56,7 @@ async function initORB() {
     const imgEl = s.element;
 
     if (!imgEl || !imgEl.complete) {
-      console.warn(`⚠️ Sablon nem betöltve: ${s.name}`);
+      console.warn(`Sablon nem betöltve: ${s.name}`);
       continue;
     }
 
@@ -78,22 +73,17 @@ async function initORB() {
     progressBar.style.width = percent + '%';
     progressText.textContent = `${percent}%`;
 
-    await new Promise(resolve => setTimeout(resolve, 50)); // hogy a UI is frissüljön
+    await new Promise(resolve => setTimeout(resolve, 50)); 
   }
 
-  // Rejtsük el a betöltő sávot
   document.getElementById('progressBarContainer').style.display = 'none';
   progressText.style.display = 'none';
 
-
-  // Kamera gomb engedélyezése
   startButton.disabled = false;
 
   orbInited = true;
   console.log('✅ ORB sablonok inicializálva');
 }
-
-
 
 async function captureAndMatch() {
   if (!streamReady) return;
@@ -101,7 +91,7 @@ async function captureAndMatch() {
   let bestOverall = { name: null, matches: 0 };
 
   for (let i = 0; i < 4; i++) {
-    await new Promise(resolve => setTimeout(resolve, 150)); // 150ms szünet a képkockák között
+    await new Promise(resolve => setTimeout(resolve, 150)); 
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -152,3 +142,8 @@ async function captureAndMatch() {
     result.innerHTML = `❌ Nem található hangszer.`;
   }
 }
+document.getElementById('popupCloseBtn').addEventListener('click', () => {
+  document.getElementById('popupOverlay').style.display = 'none';
+    });
+    window.addEventListener('DOMContentLoaded', () => {
+});
