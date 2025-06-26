@@ -100,7 +100,7 @@ async function captureAndMatch() {
 
   let bestOverall = { name: null, matches: 0 };
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     await new Promise(resolve => setTimeout(resolve, 150)); // 150ms szünet a képkockák között
 
     canvas.width = video.videoWidth;
