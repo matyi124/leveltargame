@@ -28,22 +28,6 @@ function setupUI() {
 
   startButton.disabled = true;
   startButton.addEventListener('click', captureAndMatch);
-
-
-  const sablonok = Array.from(
-  document.querySelectorAll('#templateContainer img')
-).map(img => {
- 
-  const parts = img.id.split('_');        
-  parts.shift();                         
-  const rawName = parts.slice(0, -1).join('_'); 
-  
-  const name = rawName
-    .replace(/([A-Z])/g, ' $1')           
-    .replace(/^./, s => s.toUpperCase()); 
-
-  return { name, element: img };
-})
 }
 
 function initCamera() {
@@ -92,7 +76,7 @@ async function captureAndMatch() {
 
   let bestOverall = { name: null, matches: 0 };
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     await new Promise(resolve => setTimeout(resolve, 150)); // 150ms szünet a képkockák között
 
     canvas.width = video.videoWidth;
@@ -119,7 +103,7 @@ async function captureAndMatch() {
       for (let i = 0; i < matches.size(); i++) {
         const m = matches.get(i).get(0);
         const n = matches.get(i).get(1);
-        if (m.distance < 0.6 * n.distance) good++;
+        if (m.distance < 0.7 * n.distance) good++;
       }
 
       if (good > best.matches) {
