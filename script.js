@@ -85,8 +85,6 @@ async function initORB() {
   document.getElementById('progressBarContainer').style.display = 'none';
   progressText.style.display = 'none';
 
-  // Popup eltüntetése csak most!
-  document.getElementById('popupOverlay').style.display = 'none';
 
   // Kamera gomb engedélyezése
   startButton.disabled = false;

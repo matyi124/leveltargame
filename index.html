@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <h1>🎺 Találd meg a hangszert! V10.5</h1>
+  <h1>🎺 Találd meg a hangszert! V10.6</h1>
 
   <video id="video" width="320" height="240" autoplay muted playsinline></video>
   <style>
@@ -80,13 +80,13 @@ for (const [rootName, count] of Object.entries(templateConfig)) {
     img.alt = rootName;
 
     img.onload = () => {
+      console.log(`📦 Sablon betöltve: ${rootName}${i}`); 
       loadedImages++;
       const percent = Math.round((loadedImages / totalImages) * 100);
       document.getElementById('progressBar').style.width = percent + '%';
       document.getElementById('progressText').textContent = percent + '%';
 
       if (loadedImages === totalImages) {
-        // Képek betöltve → elrejtjük a jelzőket
         document.getElementById('progressBarContainer').style.display = 'none';
         document.getElementById('progressText').style.display = 'none';
       }
