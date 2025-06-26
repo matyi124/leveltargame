@@ -4,7 +4,7 @@ const templateConfig = {
   csengo:    23,
   dob:        21,
   furulya:    30,
-  gitar:      30,
+  gitar:      25,
   harmonika:  37,
   kolomp:     31,
   szarvaskurt:  30
