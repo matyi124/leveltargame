@@ -6,7 +6,7 @@ let totalInstruments = 0;
 
 function setTotalInstruments(count) {
   totalInstruments = count;
-
+}
 
 function setupUI() {
   video       = document.getElementById('video');
