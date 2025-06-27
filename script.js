@@ -77,7 +77,7 @@ async function captureAndMatch() {
   startButton.disabled = false;
 };
 }
-}
+
 window.addEventListener("DOMContentLoaded",async () => {
   await loadModel();
   setTotalInstruments(model.getTotalClasses());
