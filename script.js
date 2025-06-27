@@ -80,7 +80,7 @@ async function captureAndMatch() {
 
 window.addEventListener("DOMContentLoaded",async () => {
   await loadModel();
-  setTotalInstruments(model.getTotalClasses());
+  setTotalInstruments(document.querySelectorAll("#instrument-list tr").length);
   document.getElementById("restartButton").addEventListener("click", () => {
   foundInstruments.clear();
   document.querySelectorAll("#instrument-list tr").forEach(row => {
