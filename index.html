@@ -19,7 +19,7 @@
 
   <body>
     <div class="container mt-5 text-center">
-      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V10.9.9</small></h1>
+      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V11.0.0</small></h1>
 
       <div class="card mx-auto" style="max-width: 400px;">
         <div class="card-body">
@@ -33,14 +33,14 @@
               <tr><th>Felismerendő hangszerek</th></tr>
             </thead>
             <tbody id="instrument-list">
-              <tr id="citera"><td>citera</td></tr>
-              <tr id="csengő"><td>csengő</td></tr>
-              <tr id="dob"><td>dob</td></tr>
-              <tr id="furulya"><td>furulya</td></tr>
-              <tr id="gitár"><td>gitár</td></tr>
-              <tr id="harmonika"><td>harmonika</td></tr>
-              <tr id="kolomp"><td>kolomp</td></tr>
-              <tr id="szarvaskürt"><td>szarvaskürt</td></tr>
+              <tr id="Schunda pedálcimbalom"><td>Schunda pedálcimbalom</td></tr>
+              <tr id="Római és középkori csengők, csörgők"><td>Római és középkori csengők, csörgők</td></tr>
+              <tr id="Sámándob"><td>Sámándob</td></tr>
+              <tr id="Magyar népi furulyák"><td>Magyar népi furulyák</td></tr>
+              <tr id="Gitár, Szegedi Hangszergyár"><td>Gitár, Szegedi Hangszergyár</td></tr>
+              <tr id="Paolo Soprani-féle harmonika"><td>Paolo Soprani-féle harmonika</td></tr>
+              <tr id="Csengő, kolomp, pergő"><td>Csengő, kolomp, pergő</td></tr>
+              <tr id="Szarukürt"><td>Szarukürt</td></tr>
             </tbody>
           </table>
         </div>
@@ -56,10 +56,8 @@
           </div>
           <div class="modal-body text-start">
             <p>
-              Időhúzószöveg itt!!<br>
-              A játék célja, hogy megtalálj minden hangszert a megadott időn belül.<br>
+              A játék célja, hogy megtalálj minden hangszert.<br>
               A játék során a kamera segítségével kell azonosítanod a hangszereket.<br>
-              A játék végén a pontszámodat fogod látni, ami a megtalált hangszerek számától függ.<br>
               Vagy nemtom még nem találtam ki, majd valami lesz.<br>
               Jó szórakozást kívánunk!
             </p>
@@ -71,7 +69,23 @@
       </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+<div class="modal fade" id="congratsModal" tabindex="-1" aria-labelledby="congratsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="congratsModalLabel">Gratulálunk!</h5>
+      </div>
+      <div class="modal-body">
+        <p>Megtataláltad az összes hangszert!</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button id="restartButton" type="button" class="btn btn-success" data-bs-dismiss="modal">Új játék</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   </body>
 </html>

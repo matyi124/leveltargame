@@ -1,5 +1,11 @@
 let video, canvas, context, result, startButton;
 let streamReady = false; 
+const foundInstruments = new Set(); 
+let totalInstruments = 0;
+
+function setTotalInstruments(count) {
+  totalInstruments = count;
+}
 
 function setupUI() {
   video       = document.getElementById('video');
@@ -41,16 +47,56 @@ async function captureAndMatch() {
   result.textContent = "Feldolgozás...";
 
   img.onload = async () => {
-    const result = await predictFromImage(img);
-    console.log("Predikció eredménye:", result);
-    document.getElementById("result").textContent = `Találat: ${result.className} (${(result.probability * 100).toFixed(1)}%)`;
-    document.getElementById(result.className).classList.add("table-success");
-  };
-  startButton.disabled = false;
+  startButton.disabled = true;
+  result.textContent = "Feldolgozás...";
+
+  const prediction = await predictFromImage(img);
+  console.log("Predikció eredménye:", prediction);
+
+  if (prediction.probability >= 0.5) {
+    if (prediction.probability >= 0.5) {
+  if (!foundInstruments.has(prediction.className)) {
+    foundInstruments.add(prediction.className);
+    result.textContent = `Találat: ${prediction.className}`;
+
+    const matchedCell = document.getElementById(prediction.className);
+    if (matchedCell) {
+      matchedCell.classList.add("table-success");
+    }
+    if (foundInstruments.size === totalInstruments) {
+  const congratsModal = new bootstrap.Modal(document.getElementById('congratsModal'));
+  congratsModal.show();
+    }
+  } else {
+    result.textContent = `Már megtaláltad: ${prediction.className}`;
+  }
+} else {
+  result.textContent = `Nem sikerült felismerni hangszert`;
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  loadModel();
+  startButton.disabled = false;
+};
+}
+}
+window.addEventListener("DOMContentLoaded",async () => {
+  await loadModel();
+  setTotalInstruments(model.getTotalClasses());
+  document.getElementById("restartButton").addEventListener("click", () => {
+  foundInstruments.clear();
+  document.querySelectorAll("#instrument-list tr").forEach(row => {
+  row.classList.remove("table-success");
+  });
+
+  const resultElement = document.getElementById("result");
+  resultElement.textContent = "";
+  resultElement.className = "";
+
+  document.getElementById("startButton").disabled = false;
+
+  const congratsModal = bootstrap.Modal.getInstance(document.getElementById('congratsModal'));
+  congratsModal.hide();
+});
+
   setupUI();
   initCamera();
    const popup = document.getElementById('popup');
