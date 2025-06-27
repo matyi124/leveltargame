@@ -64,8 +64,8 @@ async function captureAndMatch() {
       matchedCell.classList.add("table-success");
     }
     if (foundInstruments.size === totalInstruments) {
-  const congratsModal = new bootstrap.Modal(document.getElementById('congratsModal'));
-  congratsModal.show();
+      const congratsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('congratsModal'));
+      congratsModal.show();
     }
   } else {
     result.textContent = `Már megtaláltad: ${prediction.className}`;
