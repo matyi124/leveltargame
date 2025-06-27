@@ -37,14 +37,16 @@ async function captureAndMatch() {
 
   const img = new Image();
   img.src = canvas.toDataURL("image/jpeg");
+  startButton.disabled = true;
+  result.textContent = "Feldolgozás...";
 
-  // Várunk, amíg az <img> betöltődik
   img.onload = async () => {
     const result = await predictFromImage(img);
     console.log("Predikció eredménye:", result);
-    // Itt akár DOM-ba is kiírhatod, pl. egy <div id="result">-be
     document.getElementById("result").textContent = `Találat: ${result.className} (${(result.probability * 100).toFixed(1)}%)`;
+    document.getElementById(result.className).classList.add("table-success");
   };
+  startButton.disabled = false;
 }
 
 window.addEventListener("DOMContentLoaded", () => {

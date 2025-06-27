@@ -9,7 +9,6 @@ async function loadModel() {
 
 async function predictFromImage(imgElement) {
   const prediction = await model.predict(imgElement);
-  // Legmagasabb valószínűséget keressük
   prediction.sort((a, b) => b.probability - a.probability);
-  return prediction[0]; // {className, probability}
+  return prediction[0]; 
 }
