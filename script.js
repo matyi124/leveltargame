@@ -107,12 +107,12 @@ window.addEventListener("DOMContentLoaded",async () => {
 });
 
 let mode = "normal";
-let timeLeft = 60;
+let timeLeft = 120;
 let countdownInterval = null;
 
 function startTimer() {
   const display = document.getElementById("timeLeft");
-  timeLeft = 60;
+  timeLeft = 120;
   display.textContent = timeLeft;
 
   countdownInterval = setInterval(() => {
