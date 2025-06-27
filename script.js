@@ -1,6 +1,7 @@
 let video, canvas, context, result, startButton;
 let streamReady = false; 
 const foundInstruments = new Set(); 
+const negativeLabels = ["rossz1", "rossz2", "rossz3", "rossz4", "rossz5", "rossz6", "rossz7", "rossz8", "rossz9", "rossz10", "rossz11", "rossz12", "rossz13"];
 let totalInstruments = 0;
 
 function setTotalInstruments(count) {
@@ -53,8 +54,7 @@ async function captureAndMatch() {
   const prediction = await predictFromImage(img);
   console.log("Predikció eredménye:", prediction);
 
-  if (prediction.probability >= 0.5) {
-    if (prediction.probability >= 0.5) {
+  if (prediction.probability >= 0.8 && !negativeLabels.includes(prediction.className)) {
   if (!foundInstruments.has(prediction.className)) {
     foundInstruments.add(prediction.className);
     result.textContent = `Találat: ${prediction.className}`;
