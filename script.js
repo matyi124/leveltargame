@@ -6,6 +6,7 @@ let totalInstruments = 0;
 
 function setTotalInstruments(count) {
   totalInstruments = count;
+}
 
 function setupUI() {
   video       = document.getElementById('video');
@@ -76,7 +77,7 @@ async function captureAndMatch() {
   startButton.disabled = false;
 };
 }
-}
+
 window.addEventListener("DOMContentLoaded",async () => {
   await loadModel();
   setTotalInstruments(model.getTotalClasses());
