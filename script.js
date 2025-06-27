@@ -51,5 +51,10 @@ window.addEventListener("DOMContentLoaded", () => {
   loadModel();
   setupUI();
   initCamera();
+   const popup = document.getElementById('popup');
+  const okButton = document.getElementById('popup-ok');
+  okButton.addEventListener('click', () => {
+    popup.style.display = 'none'; 
+  });
 });
 
