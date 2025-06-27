@@ -106,3 +106,58 @@ window.addEventListener("DOMContentLoaded",async () => {
   });
 });
 
+let mode = "normal";
+let timeLeft = 60;
+let countdownInterval = null;
+
+function startTimer() {
+  const display = document.getElementById("timeLeft");
+  timeLeft = 60;
+  display.textContent = timeLeft;
+
+  countdownInterval = setInterval(() => {
+    timeLeft--;
+    display.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(countdownInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleTimeout() {
+  clearInterval(countdownInterval);
+
+  foundInstruments.clear();
+  document.querySelectorAll("#instrument-list tr").forEach(row => {
+    row.classList.remove("table-success");
+  });
+
+  document.getElementById("startButton").disabled = false;
+
+  mode = "normal";
+  document.getElementById("difficulty").value = "normal";
+  document.getElementById("timerDisplay").style.display = "none";
+  
+  const failedModal = new bootstrap.Modal(document.getElementById('failedModal'));
+  failedModal.show();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (mode === "hard") {
+    startTimer();
+  }
+});
+document.getElementById("difficulty").addEventListener("change", (e) => {
+  mode = e.target.value;
+
+  const timerDisplay = document.getElementById("timerDisplay");
+  if (mode === "hard") {
+    timerDisplay.style.display = "block";
+    startTimer();
+  } else {
+    timerDisplay.style.display = "none";
+    clearInterval(countdownInterval);
+  }
+});
+

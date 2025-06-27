@@ -1,67 +1,52 @@
+
 body {
-  font-family: sans-serif;
-  text-align: center;
+  background-color: #f4f4f4;
+  color: #222;
+      
 }
-
-video, canvas {
-  margin: 10px auto;
-  display: block;
+h1, .modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
-
-#result {
-  font-size: 20px;
-  color: green;
-  margin-top: 20px;
+.card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
 }
-
-#startButton {
-  font-size: 16px;
-  padding: 8px 16px;
-}
-
-#startButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-#progressBarContainer {
-  width: 80%;
-  margin: 10px auto;
-  background: #eee;
-  border-radius: 10px;
-  height: 20px;
-  transition: all 0.3s ease;
-}
-
-#progressBar {
-  width: 0%;
-  height: 100%;
-  background: #4caf50;
-  border-radius: 10px;
-  transition: width 0.3s ease;
-}
-
-#progressText {
-  font-size: 16px;
-  color: #333;
-  margin: 10px 0;
-  display: none;
-}
-
-#popup {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-#popupBox {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 300px;
-  text-align: center;
-}
+      .btn-primary {
+        background-color: #90ee90;
+        border: none;
+        color: #000;
+        font-weight: bold;
+      }
+      .btn-primary:hover {
+        background-color: #76d176;
+      }
+      .modal-content {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        color: #222;
+      }
+      .modal-footer .btn-success {
+        background-color: #90ee90;
+        border: none;
+        color: #000;
+        font-weight: bold;
+      }
+      #result {
+        color: #333;
+      }
+      .table-success {
+        background-color: #d1f0d1 !important;
+        color: #222;
+      }
+      #difficultySelect {
+        max-width: 300px;
+        margin: 0 auto 1rem;
+      }
+      #timerDisplay {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #c00;
+        display: none;
+      }

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:,">
 
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+
     <!-- Teachable Machine és saját scriptek -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
@@ -19,7 +21,17 @@
 
   <body>
     <div class="container mt-5 text-center">
-      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V11.1.6</small></h1>
+      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V11.2.0</small></h1>
+
+      <div id="difficultySelect" class="mb-3">
+        <label for="difficulty" class="form-label">Nehézségi szint:</label>
+        <select id="difficulty" class="form-select">
+          <option value="normal">Normál</option>
+          <option value="hard">Nehéz (időre megy)</option>
+        </select>
+      </div>
+
+       <div id="timerDisplay">Hátralévő idő: <span id="timeLeft">60</span> mp</div>
 
       <div class="card mx-auto" style="max-width: 400px;">
         <div class="card-body">
@@ -27,10 +39,10 @@
           <button id="startButton" class="btn btn-primary w-100 mb-2" disabled>Kép készítés</button>
           <p id="result" class="mt-3 fw-semibold"></p>
 
-          <!-- Hangszerek táblázata -->
+          
           <table class="table table-bordered mt-3">
             <thead>
-              <tr><th>Felismerendő hangszerek</th></tr>
+              <tr><th>Keresendő hangszerek</th></tr>
             </thead>
             <tbody id="instrument-list">
               <tr id="Schunda pedálcimbalom"><td>Schunda pedálcimbalom</td></tr>
@@ -50,7 +62,6 @@
       </div>
     </div>
 
-    <!-- Bootstrap modal mint popup -->
     <div class="modal show" id="popup" tabindex="-1" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -62,7 +73,8 @@
               A játék célja, hogy megtalálj minden hangszert.<br>
               A játék során a kamera segítségével kell azonosítanod a hangszereket.<br>
               A pontos eredmény érdekében tartsd a kamerát úgy, hogy a hangszer pont benne legyen a képben.<br>
-              Jó szórakozást kívánunk!
+              Ha megvan a keresett hangszer csak kattints a Kép készítés gombra.<br>
+              Sok sikert!
             </p>
           </div>
           <div class="modal-footer justify-content-center">
@@ -89,6 +101,23 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="failedModal" tabindex="-1" aria-labelledby="failedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="failedModalLabel">Lejárt az idő!</h5>
+      </div>
+      <div class="modal-body">
+        <p>Sajnos nem sikerült minden hangszert megtalálni időben.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   </body>
 </html>
