@@ -15,6 +15,7 @@ function setupUI() {
 
   startButton.disabled = true;
   startButton.addEventListener('click', captureAndMatch);
+  console.log("V11.2.3");
 }
 
 function initCamera() {
@@ -102,7 +103,7 @@ window.addEventListener("DOMContentLoaded",async () => {
   congratsModal.hide();
 
   if (mode === "hard") {
-    clearInterval(countdownInterval); // biztos ami biztos
+    clearInterval(countdownInterval);
     startTimer();
   }
 });
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 document.getElementById("difficulty").addEventListener("change", (e) => {
 
-  const extraInstrument = "Bolhalyukas magyar duda";
+  const extraInstrument = "Kecskeduda";
   const instrumentList = document.getElementById("instrument-list");
 
   mode = e.target.value;
