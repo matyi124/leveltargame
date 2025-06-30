@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Hangszer Vadászat</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:,">
 
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
 
-    <!-- Teachable Machine és saját scriptek -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
     <script src="predictor.js" defer></script>
@@ -21,8 +19,7 @@
 
   <body>
     <div class="container mt-5 text-center">
-      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V11.2.1</small></h1>
-
+      <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted">V11.2.2</small></h1>
       <div id="difficultySelect" class="mb-3">
         <label for="difficulty" class="form-label">Nehézségi szint:</label>
         <select id="difficulty" class="form-select">
@@ -48,7 +45,6 @@
               <tr id="Schunda pedálcimbalom"><td>Schunda pedálcimbalom</td></tr>
               <tr id="Római és középkori csengők, csörgők"><td>Római és középkori csengők, csörgők</td></tr>
               <tr id="Sámándob"><td>Sámándob</td></tr>
-              <tr id="Bolhalyukas magyar duda"><td>Bolhalyukas magyar duda</td></tr>
               <tr id="Magyar népi furulyák"><td>Magyar népi furulyák</td></tr>
               <tr id="Gramofon"><td>Gramofon</td></tr>
               <tr id="Paolo Soprani-féle harmonika"><td>Paolo Soprani-féle harmonika</td></tr>

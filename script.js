@@ -64,9 +64,14 @@ async function captureAndMatch() {
       matchedCell.classList.add("table-success");
     }
     if (foundInstruments.size === totalInstruments) {
-      const congratsModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('congratsModal'));
-      congratsModal.show();
-    }
+  if (countdownInterval) {
+    clearInterval(countdownInterval); 
+  }
+
+  const congratsModal = new bootstrap.Modal(document.getElementById('congratsModal'));
+  congratsModal.show();
+}
+
   } else {
     result.textContent = `Már megtaláltad: ${prediction.className}`;
   }
@@ -95,6 +100,11 @@ window.addEventListener("DOMContentLoaded",async () => {
 
   const congratsModal = bootstrap.Modal.getInstance(document.getElementById('congratsModal'));
   congratsModal.hide();
+
+  if (mode === "hard") {
+    clearInterval(countdownInterval); // biztos ami biztos
+    startTimer();
+  }
 });
 
   setupUI();
@@ -149,15 +159,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 document.getElementById("difficulty").addEventListener("change", (e) => {
+
+  const extraInstrument = "Bolhalyukas magyar duda";
+  const instrumentList = document.getElementById("instrument-list");
+
   mode = e.target.value;
 
   const timerDisplay = document.getElementById("timerDisplay");
   if (mode === "hard") {
     timerDisplay.style.display = "block";
     startTimer();
-  } else {
-    timerDisplay.style.display = "none";
-    clearInterval(countdownInterval);
+   
+  if (!document.getElementById(extraInstrument)) {
+    const row = document.createElement("tr");
+    row.id = extraInstrument;
+    row.innerHTML = `<td>${extraInstrument}</td>`;
+    instrumentList.appendChild(row);
   }
+
+} else {
+  timerDisplay.style.display = "none";
+  clearInterval(countdownInterval);
+
+  const extraRow = document.getElementById(extraInstrument);
+  if (extraRow) {
+    instrumentList.removeChild(extraRow);
+  }
+}
+setTotalInstruments(document.querySelectorAll("#instrument-list tr").length);
+
 });
 
