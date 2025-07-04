@@ -14,10 +14,12 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ✅ **Kvíz játék**
 - Teszteld a tudásod kérdés-felelet formában.
-- Minden helyes válasszal közelebb jutsz a győzelemhez!  
+- Minden helyes válasszal közelebb jutsz a győzelemhez!
+- <ins>Még nem teljes!</ins>  
    *Elérhető itt:* [`kviz/index.html`](kviz/index.html)
 
 ✅ **Hangszer felismerő**
+- Mobilra optimalizált.
 - Ismerd fel a különböző hangszereket.  
  *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)
 
