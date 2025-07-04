@@ -1,0 +1,52 @@
+
+body {
+  background-color: #f4f4f4;
+  color: #222;
+      
+}
+h1, .modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+      .btn-primary {
+        background-color: #90ee90;
+        border: none;
+        color: #000;
+        font-weight: bold;
+      }
+      .btn-primary:hover {
+        background-color: #76d176;
+      }
+      .modal-content {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        color: #222;
+      }
+      .modal-footer .btn-success {
+        background-color: #90ee90;
+        border: none;
+        color: #000;
+        font-weight: bold;
+      }
+      #result {
+        color: #333;
+      }
+      .table-success {
+        background-color: #d1f0d1 !important;
+        color: #222;
+      }
+      #difficultySelect {
+        max-width: 300px;
+        margin: 0 auto 1rem;
+      }
+      #timerDisplay {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #c00;
+        display: none;
+      }
