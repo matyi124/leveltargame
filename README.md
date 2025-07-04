@@ -21,8 +21,8 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ✅ **Hangszer felismerő**
 - Mobilra optimalizált.
 - Ismerd fel a különböző hangszereket.  
- *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)
-
+ *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)</br>
+  
   **Comnig Soon...**
 ---
 
