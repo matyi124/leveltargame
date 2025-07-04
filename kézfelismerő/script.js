@@ -1,14 +1,32 @@
-let canvas, ctx, gestureEstimator;
+let canvas, ctx, landmarks = null, knnClassifier;
+const resultDiv = document.getElementById("result");
+
+async function loadCSVandTrain() {
+  knnClassifier = ml5.KNNClassifier();
+
+  const response = await fetch("hand_gestures.csv");
+  const text = await response.text();
+  const lines = text.trim().split("\n");
+
+  lines.forEach(line => {
+    const parts = line.split(",");
+    const label = parts.pop();
+    const features = parts.map(Number);
+    knnClassifier.addExample(features, label);
+  });
+
+  console.log(`✅ Tanítás kész, minták száma: ${lines.length}`);
+}
 
 async function initMediapipe() {
   const hands = new Hands({
     locateFile: (file) => {
       return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    },
+    }
   });
 
   hands.setOptions({
-    maxNumHands: 2,
+    maxNumHands: 1,
     modelComplexity: 1,
     minDetectionConfidence: 0.7,
     minTrackingConfidence: 0.7,
@@ -16,23 +34,21 @@ async function initMediapipe() {
 
   hands.onResults(onResults);
 
-  const videoElement = document.createElement("video");
-  videoElement.width = 640;
-  videoElement.height = 480;
-  videoElement.autoplay = true;
-  videoElement.muted = true;
-  videoElement.playsInline = true;
+  const video = document.createElement("video");
+  video.autoplay = true;
+  video.muted = true;
+  video.playsInline = true;
 
   const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  videoElement.srcObject = stream;
-  await videoElement.play();
+  video.srcObject = stream;
+  await video.play();
 
-  const camera = new Camera(videoElement, {
+  const camera = new Camera(video, {
     onFrame: async () => {
-      await hands.send({ image: videoElement });
+      await hands.send({ image: video });
     },
     width: 640,
-    height: 480,
+    height: 480
   });
   camera.start();
 
@@ -40,27 +56,6 @@ async function initMediapipe() {
   canvas.width = 640;
   canvas.height = 480;
   ctx = canvas.getContext("2d");
-
-  // 👇 itt definiáljuk az új gesztust
- const openPalm = new fp.GestureDescription('open_palm');
-
-for (let finger of [fp.Finger.Thumb, fp.Finger.Index, fp.Finger.Middle, fp.Finger.Ring, fp.Finger.Pinky]) {
-  openPalm.addCurl(finger, fp.FingerCurl.NoCurl, 1.0);// megengedjük kicsit hajolva is
-  openPalm.addDirection(finger, fp.FingerDirection.VerticalUp, 0.75);
-}
-
-
-const fist = new fp.GestureDescription('fist');
-
-for (let finger of [fp.Finger.Thumb, fp.Finger.Index, fp.Finger.Middle, fp.Finger.Ring, fp.Finger.Pinky]) {
-  fist.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
-}
-
-
-  gestureEstimator = new fp.GestureEstimator([
-    openPalm,
-    fist
-  ]);
 }
 
 function onResults(results) {
@@ -69,26 +64,37 @@ function onResults(results) {
 
   ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
-  if (results.multiHandLandmarks) {
-    for (let i = 0; i < results.multiHandLandmarks.length; i++) {
-      const landmarks = results.multiHandLandmarks[i];
-      const handLabel = results.multiHandedness[i].label;
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    landmarks = results.multiHandLandmarks[0];
+    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 2 });
+    drawLandmarks(ctx, landmarks, { color: '#FF0000', lineWidth: 1 });
 
-      drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
-      drawLandmarks(ctx, landmarks, {color: '#FF0000', lineWidth: 1});
+   const sample = [];
+for (const point of landmarks) {
+  sample.push(point.x);
+  sample.push(point.y);
+}
 
-      const prediction = gestureEstimator.estimate(landmarks, 4.0);
 
-      if (prediction.gestures.length > 0) {
-        const best = prediction.gestures.reduce((p, c) => p.score > c.score ? p : c);
-        console.log(`Kéz ${i + 1} (${handLabel}): ${best.name} (${best.score.toFixed(2)})`);
-      } else {
-        console.log(`Kéz ${i + 1} (${handLabel}): nincs felismerhető gesztus`);
-      }
+    if (knnClassifier.getNumLabels() > 0) {
+      knnClassifier.classify(sample, (err, result) => {
+        if (err) {
+          console.error(err);
+          resultDiv.textContent = "❌ Hiba";
+          return;
+        }
+        resultDiv.textContent = `🔷 ${result.label} (${(result.confidencesByLabel[result.label]*100).toFixed(1)}%)`;
+      });
+    } else {
+      resultDiv.textContent = "⏳ Modell még töltődik...";
     }
+  } else {
+    landmarks = null;
+    resultDiv.textContent = "👋 Kéz nem látható";
   }
 
   ctx.restore();
 }
 
+loadCSVandTrain();
 initMediapipe();

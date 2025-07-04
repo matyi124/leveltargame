@@ -1,0 +1,22 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+canvas {
+  border: 2px solid #333;
+  margin: 10px auto;
+  display: block;
+}
+
+#result {
+  font-size: 20px;
+  margin-top: 10px;
+}
