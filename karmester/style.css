@@ -1,41 +1,14 @@
-
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f8f9fa;
-}
-
-h1 {
-  margin-top: 20px;
-}
-
-.orchestra {
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-  gap: 10px;
-}
-
-.cell {
-  width: 150px;
-  height: 150px;
-  background: #eee;
-  border: 2px solid #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
 }
 
 .cell.active {
-  background-color: #cce5ff;
-  border-color: #004085;
+  background-color: #cce5ff !important;
+  border-color: #004085 !important;
 }
 
 .volume-bar {
-  width: 80%;
+  width: 100%;
   height: 10px;
   background: #ddd;
   margin-top: 10px;
@@ -46,4 +19,10 @@ h1 {
   height: 100%;
   background: #28a745;
   width: 50%;
+}
+
+#camera {
+  transform: scaleX(-1);
+  width: 640px;
+  height: 480px;
 }
