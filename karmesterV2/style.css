@@ -1,0 +1,28 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.cell.active {
+  background-color: #cce5ff !important;
+  border-color: #004085 !important;
+}
+
+.volume-bar {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  margin-top: 10px;
+  position: relative;
+}
+
+.volume-fill {
+  height: 100%;
+  background: #28a745;
+  width: 50%;
+}
+
+#camera {
+  transform: scaleX(-1);
+  width: 640px;
+  height: 480px;
+}
