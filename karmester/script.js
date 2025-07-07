@@ -1,257 +1,156 @@
-let currentTrack = null;
-
-const thresholdTop = window.innerHeight * 0.4;
-const thresholdBottom = window.innerHeight * 0.6;
-
+let leftModel, rightModel, webcam, ctx, canvas;
+const volumes = [1, 1, 1];
 const audioTracks = [
   new Audio("hangok/Canon_in_D__Pachelbel-Cello.mp3"),
   new Audio("hangok/Canon_in_D__Pachelbel-Fiolin.mp3"),
   new Audio("hangok/Canon_in_D__Pachelbel-Fiolin_(1).mp3"),
 ];
-const volumes = [1, 1, 1];
+const leftModelURL = "model/left/model.json";
+const leftMetadataURL = "model/left/metadata.json";
+const rightModelURL = "model/right/model.json";
+const rightMetadataURL = "model/right/metadata.json";
 
-const cellBounds = [
-  { xMin: 0, xMax: 350, yMin: 0, yMax: 1080 },
-  { xMin: 350, xMax: 750, yMin: 0, yMax: 1080 },
-  { xMin: 750, xMax: 1920, yMin: 0, yMax: 1080 },
-];
+function checkMuteState() {
+  const allMuted = audioTracks.every(s => s.volume === 0);
 
-let knnClassifier = ml5.KNNClassifier();
-
-async function loadKNN() {
-  knnClassifier = ml5.KNNClassifier();
-  try {
-    const res = await fetch("hand_gestures.csv");
-    if (!res.ok)
-      throw new Error(
-        `Nem találom a hand_gestures.csv-t! (HTTP ${res.status})`
-      );
-    const txt = await res.text();
-    const lines = txt.trim().split("\n");
-
-    if (lines.length === 0) throw new Error("CSV üres!");
-
-    lines.forEach((line) => {
-      const parts = line.split(",");
-      const label = parts.pop().trim();
-      const features = parts.map(Number);
-
-      if (features.some(isNaN)) {
-        console.warn("Találtam hibás számot ebben a sorban:", line);
-        return;
-      }
-
-      knnClassifier.addExample(features, label);
+  if (allMuted) {
+    audioTracks.forEach(s => s.pause());
+  } else {
+    audioTracks.forEach(s => {
+      if (s.paused) s.play(); 
     });
-
-    const labels = Object.keys(knnClassifier.mapStringToIndex);
-    if (labels.length === 0)
-      throw new Error("Nem sikerült betölteni egyetlen osztályt sem!");
-
-    console.log(`KNN betöltve: osztályok: ${labels.join(", ")}`);
-  } catch (err) {
-    console.error("Hiba a KNN betöltése közben:", err);
   }
 }
-
-function classifyHand(handLandmarks, callback) {
-  const sample = [];
-  for (const p of handLandmarks) {
-    sample.push(p.x, p.y);
-  }
-  knnClassifier.classify(sample, (err, result) => {
-    if (err) {
-      console.error(err);
-      callback(null);
-      return;
-    }
-    callback(result.label);
-  });
-}
-
-// elindítja a zenéket
-audioTracks.forEach((track) => {
-  track.loop = true;
-  track.play();
-});
 
 function adjustVolume(index, delta) {
   volumes[index] = Math.max(0, Math.min(1, volumes[index] + delta));
   audioTracks[index].volume = volumes[index];
-  const fill = document.getElementById(`volume-fill-${index}`);
-  if (fill) {
-    fill.style.width = `${volumes[index] * 100}%`;
+  const bar = document.getElementById(`volume-bar-${index}`);
+  if (bar) {
+    bar.value = volumes[index];
+    bar.style.width = `${volumes[index] * 100}%`;
   }
-  // console.log(`${index + 1} hangerő: ${(volumes[index] * 100).toFixed(0)}%`);
+  checkMuteState();
+  
+  console.log(
+    `🎵 Sáv ${index + 1} hangerő: ${(volumes[index] * 100).toFixed(0)}%`
+  );
 }
 
-function highlightCell(index) {
-  const cells = document.querySelectorAll(".cell");
+function handlePose(label) {
+  console.log(label);
+  const volStep = 0.05;
 
-  if (index === "all") {
-    cells.forEach((cell) => cell.classList.add("active"));
-  } else {
-    cells.forEach((cell, i) => {
-      if (i === index) cell.classList.add("active");
-      else cell.classList.remove("active");
-    });
+  switch (label) {
+    // BAL KÉZ
+    case "bal_lent":
+      adjustVolume(2, -volStep);
+      break;
+    case "bal_fent":
+      adjustVolume(2, volStep);
+      break;
+    case "bal_kozep_lent":
+      adjustVolume(1, -volStep);
+      break;
+    case "bal_kozep_fent":
+      adjustVolume(1, volStep);
+      break;
+    case "bal_semmi":
+      break;  
+
+    // JOBB KÉZ
+    case "jobb_lent":
+      adjustVolume(0, -volStep);
+      break;
+    case "jobb_fent":
+      adjustVolume(0, volStep);
+      break;
+    case "jobb_kozep_lent":
+      adjustVolume(1, -volStep);
+      break;
+    case "jobb_kozep_fent":
+      adjustVolume(1, volStep);
+      break;
+    case "jobb_semmi":
+      break;  
+    default:
+      console.log("Ismeretlen póz:", label);
   }
 }
 
-function hoveredCell(x, y) {
-  for (let i = 0; i < cellBounds.length; i++) {
-    const b = cellBounds[i];
-    if (x >= b.xMin && x <= b.xMax && y >= b.yMin && y <= b.yMax) {
-      return i;
-    }
-  }
-  return null;
+async function predict() {
+  const { pose, posenetOutput } = await leftModel.estimatePose(webcam.canvas);
+
+  const leftPrediction = await leftModel.predict(posenetOutput);
+  const rightPrediction = await rightModel.predict(posenetOutput);
+
+  const topLeft = leftPrediction.reduce((a, b) =>
+    a.probability > b.probability ? a : b
+  );
+  const topRight = rightPrediction.reduce((a, b) =>
+    a.probability > b.probability ? a : b
+  );
+
+  if (topLeft.probability > 0.8) handlePose(topLeft.className, true);
+  if (topRight.probability > 0.8) handlePose(topRight.className, false);
+
+  drawPose();
 }
 
-let hasStarted = false;
+function drawPose() {
+  ctx.save();
+  ctx.scale(-1, 1);
+  ctx.drawImage(webcam.canvas, -canvas.width, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
 
-async function start() {
-  await loadKNN();
+async function loop() {
+  webcam.update?.();
+  await predict();
+  window.requestAnimationFrame(loop);
+}
 
-  if (hasStarted) {
-    console.warn("start() már lefutott, nem fut újra.");
-    return;
-  }
-  hasStarted = true;
+async function init() {
+  leftModel = await tmPose.load(leftModelURL, leftMetadataURL);
+  rightModel = await tmPose.load(rightModelURL, rightMetadataURL);
 
-  console.log("start() meghívva");
+  const camWidth = 1280;
+  const camHeight = 720;
 
   const stream = await navigator.mediaDevices.getUserMedia({
-    video: { frameRate: { ideal: 60, max: 60 } },
-  });
-
-  const video = document.getElementById("camera");
-  video.srcObject = stream;
-
-  video.addEventListener("loadeddata", function onceLoaded() {
-    console.log("video.loadeddata esemény lefutott");
-
-    startMediapipe(video);
-
-    video.removeEventListener("loadeddata", onceLoaded);
-  });
-}
-
-start();
-
-function startMediapipe(video) {
-  const hands = new Hands({
-    locateFile: (file) => `mediapipe/hands/${file}`,
-  });
-  hands.setOptions({
-    maxNumHands: 2,
-    modelComplexity: 0,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-  });
-
-  let previousLeftIndex = null;
-  hands.onResults((results) => {
-    if (results.multiHandLandmarks?.length >= 1) {
-      let leftIndex = 0;
-      let rightIndex = null;
-
-      if (results.multiHandLandmarks.length === 2) {
-        const x0 = results.multiHandLandmarks[0][8].x;
-        const x1 = results.multiHandLandmarks[1][8].x;
-
-        const x0px = (1 - x0) * window.innerWidth;
-        const x1px = (1 - x1) * window.innerWidth;
-
-        const diff = Math.abs(x0px - x1px);
-
-        if (previousLeftIndex !== null && diff < 50) {
-          leftIndex = previousLeftIndex;
-          rightIndex = previousLeftIndex === 0 ? 1 : 0;
-        } else {
-          if (x0 < x1) {
-            leftIndex = 0;
-            rightIndex = 1;
-          } else {
-            leftIndex = 1;
-            rightIndex = 0;
-          }
-          previousLeftIndex = leftIndex;
-        }
-      } else {
-        previousLeftIndex = 0;
-      }
-
-      const left = results.multiHandLandmarks[leftIndex];
-      const lx = (1 - left[8].x) * window.innerWidth;
-      const ly = left[8].y * window.innerHeight;
-
-      const right =
-        rightIndex !== null ? results.multiHandLandmarks[rightIndex] : null;
-      const rx = right ? (1 - right[8].x) * window.innerWidth : null;
-      const ry = right ? right[8].y * window.innerHeight : null;
-
-      // logoljuk
-      // console.log(`✋ Bal kéz: x=${lx.toFixed(0)}, y=${ly.toFixed(0)}`);
-      // if (right) console.log(`🤚 Jobb kéz: x=${rx.toFixed(0)}, y=${ry.toFixed(0)}`);
-
-      classifyHand(left, (leftLabel) => {
-        if (!leftLabel) return;
-
-        if (right) {
-          classifyHand(right, (rightLabel) => {
-            if (!rightLabel) return;
-
-            //  console.log(`Bal kéz: ${leftLabel}, Jobb kéz: ${rightLabel}`);
-
-            if (leftLabel === "open_palm" && rightLabel === "open_palm") {
-              if (ly < thresholdTop && ry < thresholdTop) {
-                audioTracks.forEach((_, i) => adjustVolume(i, +0.05));
-                highlightCell("all");
-                // console.log("Mindkét kéz open_palm FENT → minden hangerő NŐ");
-              } else if (ly > thresholdBottom && ry > thresholdBottom) {
-                audioTracks.forEach((_, i) => adjustVolume(i, -0.05));
-                highlightCell("all");
-                //  console.log("Mindkét kéz open_palm LENT → minden hangerő CSÖKKEN");
-              }
-            } else {
-              // normál pointing logika
-              const hovered = hoveredCell(lx, ly);
-              if (hovered !== null) {
-                currentTrack = hovered;
-                highlightCell(currentTrack);
-              } else {
-                currentTrack = null;
-              }
-
-              if (rightIndex !== null && currentTrack !== null) {
-                // console.log(
-                //  `ry: ${ry}, thresholdTop: ${thresholdTop}, thresholdBottom: ${thresholdBottom}`
-                // );
-
-                if (ry < thresholdTop) {
-                  // console.log("🔼 Fent, növelem a hangerőt");
-                  adjustVolume(currentTrack, +0.05);
-                } else if (ry > thresholdBottom) {
-                  //  console.log("🔽 Lent, csökkentem a hangerőt");
-                  adjustVolume(currentTrack, -0.05);
-                } else {
-                  //  console.log("⏸ Középen, nem csinálok semmit");
-                }
-              }
-            }
-          });
-        }
-      });
-    }
-  });
-
-  const cam = new Camera(video, {
-    onFrame: async () => {
-      await hands.send({ image: video });
+    video: {
+      deviceId: {                                                               //ezeket kell kiszedni ha saját kamerát akarsz
+        exact:                                                                  //  
+          "7e2e9dda029ee775bd94bfadd3b9f065da4f816065c9649a8f79641e64707008",    // 
+      },                                                                          //
+      width: { ideal: camWidth },
+      height: { ideal: camHeight },
     },
-    width: 640,
-    height: 480,
   });
-  cam.start();
+
+  const video = document.createElement("video");
+  video.width = camWidth;
+  video.height = camHeight;
+  video.autoplay = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.srcObject = stream;
+  await video.play();
+
+  webcam = { canvas: video, update: () => {} };
+
+  canvas = document.getElementById("webcam");
+  canvas.width = camWidth;
+  canvas.height = camHeight;
+  ctx = canvas.getContext("2d");
+
+  audioTracks.forEach((track, idx) => {
+    track.loop = true;
+    track.volume = volumes[idx];
+    track.play();
+  });
+
+  window.requestAnimationFrame(loop);
 }
+
+init();

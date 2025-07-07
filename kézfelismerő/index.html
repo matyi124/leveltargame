@@ -8,11 +8,23 @@
 </head>
 <body>
 
-<h1>✋ Gesztus felismerés</h1>
+<h1>Gesztus felismerés</h1>
 
 <canvas id="webcam"></canvas>
 
-<div id="result">🔍 Várakozás...</div>
+<div id="result">Várakozás...</div>
+
+<h2>Tutorial</h2>
+<div id="tutorial">
+  <ul>
+    <li>🤚 <strong>nyílt tenyér</strong>: elengedi a tárgyat</li>
+    <li>✊ <strong>ököl</strong>: megfogja a tárgyat, ha közel van</li>
+    <li>👉 <strong>mutatóujj</strong>: (még semmi)</li>
+    <li>Ha egy tárgy közelében vagy és <strong>öklöt</strong> mutatsz, a tárgy piros lesz és követi a kezed.</li>
+    <li>🖐 Ha <strong>nyitott tenyeret</strong> mutatsz, a tárgy marad ott, ahol elengeded.</li>
+    <li> Két tárgy van, mindkettőt külön meg lehet mozgatni.</li>
+  </ul>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
@@ -21,4 +33,3 @@
 <script src="script.js"></script>
 
 </body>
-</html>
