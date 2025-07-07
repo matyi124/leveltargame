@@ -15,7 +15,7 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ✅ **Karmester játék V2**
 - Az eredeti karmester játék továbbfejlesztett változata.
 - Más technológiát használ: Mediapipe helyett Teachable Machine modellel.
-- Kicsit más kezelőfelület és pontosabb kézdetektálás.
+- Kicsit más kezelőfelület és pontosabb kézdetektálás.  
    *Elérhető itt:* [`karmesterV2/index.html`](karmesterV2/index.html)
 
 ✅ **Kvíz játék**
@@ -31,7 +31,7 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ✅ **Gesztusfelismerő demo**
 - Kézgesztus felismerő demó: fist/open_palm/pointing.
-- Tárgyakat mozgathatsz a kézmozdulataiddal.
+- Tárgyakat mozgathatsz a kézmozdulataiddal.  
    *Elérhető itt:* [`gesztusfelismero/index.html`](gesztusfelismero/index.html)
 
   
