@@ -3,6 +3,11 @@ let currentTrack = null;
 const thresholdTop = window.innerHeight * 0.4;
 const thresholdBottom = window.innerHeight * 0.6;
 
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.getElementById("startScreen").style.display = "none";
+  startGame();
+});
+
 const audioTracks = [
   new Audio("hangok/Canon_in_D__Pachelbel-Cello.mp3"),
   new Audio("hangok/Canon_in_D__Pachelbel-Fiolin.mp3"),
@@ -69,12 +74,6 @@ function classifyHand(handLandmarks, callback) {
   });
 }
 
-// elindítja a zenéket
-audioTracks.forEach((track) => {
-  track.loop = true;
-  track.play();
-});
-
 function adjustVolume(index, delta) {
   volumes[index] = Math.max(0, Math.min(1, volumes[index] + delta));
   audioTracks[index].volume = volumes[index];
@@ -136,8 +135,17 @@ async function start() {
     video.removeEventListener("loadeddata", onceLoaded);
   });
 }
+function startGame() {
+  console.log("🎵 Játék indul!");
+  // elindítja a zenéket
+  audioTracks.forEach((track) => {
+  track.loop = true;
+  track.play();
+});
+  start();
 
-start();
+}
+
 
 function startMediapipe(video) {
   const hands = new Hands({
