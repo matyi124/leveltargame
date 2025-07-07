@@ -119,10 +119,10 @@ async function init() {
 
   const stream = await navigator.mediaDevices.getUserMedia({
     video: {
-      deviceId: {                                                               //ezeket kell kiszedni ha saját kamerát akarsz
-        exact:                                                                  //  
-          "7e2e9dda029ee775bd94bfadd3b9f065da4f816065c9649a8f79641e64707008",    // 
-      },                                                                          //
+     // deviceId: {                                                               //ezeket kell kiszedni ha saját kamerát akarsz
+       // exact:                                                                  //  
+         // "7e2e9dda029ee775bd94bfadd3b9f065da4f816065c9649a8f79641e64707008",    // 
+     // },                                                                          //
       width: { ideal: camWidth },
       height: { ideal: camHeight },
     },
