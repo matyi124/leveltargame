@@ -27,7 +27,12 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ✅ **Hangszer felismerő**
 - Mobilra optimalizált.
 - Ismerd fel a különböző hangszereket.  
-   *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)</br>
+   *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)
+
+✅ **Hangazonosító**
+- Kézgesztus felismerő demó: fist/open_palm/pointing.
+- Tárgyakat mozgathatsz a kézmozdulataiddal.  
+   *Elérhető itt:* [`hangfelismero/index.html`](hangfelismero/index.html)
 
 ✅ **Gesztusfelismerő demo**
 - Kézgesztus felismerő demó: fist/open_palm/pointing.
@@ -56,6 +61,11 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ---
 
 ## Verzió
+
+**1.2.0**  | 2025-07-07
+- Hangazonosító játék hozzáadva (még nem teljes)
+- KarmesterV2 javítva
+- Kissebb bugok javítva
 
 **1.1.0**  | 2025-07-07
 - Karmester játék második verziója hozzáadva (karmesterV2)
