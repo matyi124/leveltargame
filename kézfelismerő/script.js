@@ -1,6 +1,9 @@
 let canvas, ctx, landmarks = null, knnClassifier;
 const resultDiv = document.getElementById("result");
 
+const puzzleImages = ["puzzle.png"];
+let currentPuzzleIndex = 0;
+
 let currentGesture = null;
 const pieces = [];
 let img;
@@ -32,25 +35,48 @@ async function loadCSVandTrain() {
 }
 
 function setupPuzzle() {
-  img = new Image();
-  img.src = "puzzle.jpg";
-  img.onload = () => {
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        pieces.push({
-          sx: c * pieceSize,
-          sy: r * pieceSize,
-          sw: pieceSize,
-          sh: pieceSize,
-          x: Math.random() * (canvas.width - pieceSize),
-          y: 350 + Math.random() * (canvas.height - 350 - pieceSize),
-          correctX: puzzleOffsetX + c * pieceSize,
-          correctY: puzzleOffsetY + r * pieceSize,
-          held: false,
-          locked: false
-        });
+img = new Image();
+img.src = puzzleImages[currentPuzzleIndex];
+img.onload = () => {
+  pieces.length = 0;
+const tempCanvas = document.createElement('canvas');
+const tempCtx = tempCanvas.getContext('2d');
+tempCanvas.width = pieceSize;
+tempCanvas.height = pieceSize;
+
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+
+    // ideiglenesen kirajzoljuk a darabot
+    tempCtx.clearRect(0, 0, pieceSize, pieceSize);
+    tempCtx.drawImage(img,
+      c * pieceSize, r * pieceSize, pieceSize, pieceSize,
+      0, 0, pieceSize, pieceSize);
+
+    const imageData = tempCtx.getImageData(0, 0, pieceSize, pieceSize).data;
+
+    let visible = false;
+    for (let i = 3; i < imageData.length; i += 4) {
+      if (imageData[i] > 0) {
+        visible = true;
+        break;
       }
     }
+
+    pieces.push({
+      sx: c * pieceSize,
+      sy: r * pieceSize,
+      sw: pieceSize,
+      sh: pieceSize,
+      x: Math.random() * (canvas.width - pieceSize),
+      y: 350 + Math.random() * (canvas.height - 350 - pieceSize),
+      correctX: puzzleOffsetX + c * pieceSize,
+      correctY: puzzleOffsetY + r * pieceSize,
+      held: false,
+      locked: !visible
+    });
+  }
+}
     requestAnimationFrame(draw);
   }
 }
@@ -188,7 +214,18 @@ const allLocked = pieces.every(p => p.locked);
 if (allLocked) {
   ctx.fillStyle = "green";
   ctx.font = "32px Arial";
-  ctx.fillText("🎉 Kész vagy, gratulálok!", canvas.width / 2 - 150, canvas.height / 2);
+  ctx.fillText("Kész vagy!", canvas.width / 2 - 100, canvas.height / 2);
+
+  // várj egy kicsit, majd következő puzzle
+  setTimeout(() => {
+    currentPuzzleIndex++;
+    if (currentPuzzleIndex < puzzleImages.length) {
+      setupPuzzle();
+    } else {
+      ctx.fillStyle = "blue";
+      ctx.fillText("Minden kész! Gratulálok!", canvas.width / 2 - 150, canvas.height / 2 + 50);
+    }
+  }, 2000);
 }
 }
 
