@@ -1,15 +1,18 @@
-let canvas,
-  ctx,
-  landmarks = null,
-  knnClassifier;
+let canvas, ctx, landmarks = null, knnClassifier;
 const resultDiv = document.getElementById("result");
 
 let currentGesture = null;
+const pieces = [];
+let img;
+const rows = 3, cols = 3;
+const pieceSize = 100;
+const tolerance = 70;
+const canvasSize = 600;
 
-const objects = [
-  { x: 200, y: 200, width: 80, height: 80, held: false, color: "blue" },
-  { x: 400, y: 300, width: 80, height: 80, held: false, color: "green" },
-];
+let heldPiece = null;
+
+const puzzleOffsetX = (canvasSize - cols * pieceSize) / 2;
+const puzzleOffsetY = 50;
 
 async function loadCSVandTrain() {
   knnClassifier = ml5.KNNClassifier();
@@ -18,7 +21,7 @@ async function loadCSVandTrain() {
   const text = await response.text();
   const lines = text.trim().split("\n");
 
-  lines.forEach((line) => {
+  lines.forEach(line => {
     const parts = line.split(",");
     const label = parts.pop();
     const features = parts.map(Number);
@@ -28,18 +31,39 @@ async function loadCSVandTrain() {
   console.log(`✅ Tanítás kész, minták száma: ${lines.length}`);
 }
 
+function setupPuzzle() {
+  img = new Image();
+  img.src = "puzzle.jpg";
+  img.onload = () => {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        pieces.push({
+          sx: c * pieceSize,
+          sy: r * pieceSize,
+          sw: pieceSize,
+          sh: pieceSize,
+          x: Math.random() * (canvas.width - pieceSize),
+          y: 350 + Math.random() * (canvas.height - 350 - pieceSize),
+          correctX: puzzleOffsetX + c * pieceSize,
+          correctY: puzzleOffsetY + r * pieceSize,
+          held: false,
+          locked: false
+        });
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+}
+
 async function initMediapipe() {
   const hands = new Hands({
-    locateFile: (file) => {
-      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    },
+    locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
   });
-
   hands.setOptions({
     maxNumHands: 1,
     modelComplexity: 1,
     minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.7,
+    minTrackingConfidence: 0.7
   });
 
   hands.onResults(onResults);
@@ -54,8 +78,8 @@ async function initMediapipe() {
   await video.play();
 
   canvas = document.getElementById("webcam");
-  canvas.width = 640;
-  canvas.height = 480;
+  canvas.width = canvasSize;
+  canvas.height = canvasSize;
   ctx = canvas.getContext("2d");
 
   const camera = new Camera(video, {
@@ -63,32 +87,36 @@ async function initMediapipe() {
       await hands.send({ image: video });
     },
     width: 640,
-    height: 480,
+    height: 480
   });
   camera.start();
+
+  setupPuzzle();
 }
 
 function onResults(results) {
   ctx.save();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#eee";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Tükrözzük a kéz pontokat
+  ctx.save();
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
     landmarks = results.multiHandLandmarks[0];
-    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {
-      color: "#00FF00",
-      lineWidth: 2,
-    });
+    drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: "#00FF00", lineWidth: 2 });
     drawLandmarks(ctx, landmarks, { color: "#FF0000", lineWidth: 1 });
 
     const sample = [];
-    landmarks.forEach((p) => {
+    landmarks.forEach(p => {
       sample.push(p.x);
       sample.push(p.y);
     });
 
-    // csak ha a classifier betöltött
     if (knnClassifier.getNumLabels() > 0) {
       knnClassifier.classify(sample, (err, result) => {
         if (err) {
@@ -96,59 +124,72 @@ function onResults(results) {
           resultDiv.textContent = "❌ Hiba";
           return;
         }
-
         currentGesture = result.label?.trim().toLowerCase();
       });
     }
 
-    let handX = 0,
-      handY = 0;
-    landmarks.forEach((p) => {
+    let handX = 0, handY = 0;
+    landmarks.forEach(p => {
       handX += p.x * canvas.width;
       handY += p.y * canvas.height;
     });
     handX /= landmarks.length;
     handY /= landmarks.length;
 
-    const tolerance = 50;
+    // Tükrözzük a logikában is
+    handX = canvas.width - handX;
 
-    console.log(`currentGesture: [${currentGesture}]`);
-
-    objects.forEach((obj) => {
-      if (currentGesture === "fist") {
-        if (
-          !obj.held &&
-          handX > obj.x - tolerance &&
-          handX < obj.x + obj.width + tolerance &&
-          handY > obj.y - tolerance &&
-          handY < obj.y + obj.height + tolerance
-        ) {
-          obj.held = true;
-          console.log("🎯 Tárgy megfogva!");
+    if (currentGesture === "fist" && !heldPiece) {
+      pieces.forEach(piece => {
+        if (!heldPiece && !piece.locked &&
+            handX > piece.x && handX < piece.x + pieceSize &&
+            handY > piece.y && handY < piece.y + pieceSize) {
+          piece.held = true;
+          heldPiece = piece;
         }
-      }
+      });
+    }
 
-      if (currentGesture === "open_palm") {
-        if (obj.held) console.log("👐 Tárgy elengedve!");
-        obj.held = false;
+    if (currentGesture === "open_palm" && heldPiece) {
+      if (Math.abs(heldPiece.x - heldPiece.correctX) < tolerance &&
+          Math.abs(heldPiece.y - heldPiece.correctY) < tolerance) {
+        heldPiece.x = heldPiece.correctX;
+        heldPiece.y = heldPiece.correctY;
+        heldPiece.locked = true;
       }
+      heldPiece.held = false;
+      heldPiece = null;
+    }
 
-      if (obj.held) {
-        obj.x = handX - obj.width / 2;
-        obj.y = handY - obj.height / 2;
-      }
-    });
-ctx.fillStyle = "black";
-ctx.font = "20px Arial";
-ctx.fillText(`Gesture: ${currentGesture || 'nincs'}`, 10, 30);
-
-    objects.forEach((obj) => {
-      ctx.fillStyle = obj.held ? "red" : obj.color;
-      ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
-    });
+    if (heldPiece) {
+      heldPiece.x = handX - pieceSize / 2;
+      heldPiece.y = handY - pieceSize / 2;
+    }
   }
 
+  ctx.restore(); // a kéz pontok tükrözése vége
+
+  draw();
+
   ctx.restore();
+}
+
+function draw() {
+  pieces.forEach(piece => {
+    ctx.drawImage(img, piece.sx, piece.sy, piece.sw, piece.sh,
+                       piece.x, piece.y, pieceSize, pieceSize);
+  });
+  ctx.fillStyle = "black";
+  ctx.font = "16px Arial";
+  ctx.fillText(`Gesture: ${currentGesture || 'nincs'}`, 10, canvas.height - 10);
+
+  // ellenőrzés: minden a helyén?
+const allLocked = pieces.every(p => p.locked);
+if (allLocked) {
+  ctx.fillStyle = "green";
+  ctx.font = "32px Arial";
+  ctx.fillText("🎉 Kész vagy, gratulálok!", canvas.width / 2 - 150, canvas.height / 2);
+}
 }
 
 (async () => {
