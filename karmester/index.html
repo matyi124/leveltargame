@@ -8,29 +8,44 @@
 </head>
 <body>
   <h1>Hangszersáv vezérlés</h1>
-  <div class="container">
-  <canvas id="webcam"></canvas>
-  <div class="tracks">
-  
-<div id="label-container"></div>
-  <div class="sound-control">
-      <div class="track" id="track-0">🎻 Hegedű 1</div>
-        <div class="volume-bar-container">
-          <div id="volume-bar-0" class="volume-bar"></div>
+
+  <div class="main-container">
+    <!-- BAL tutorial -->
+    <div class="tutorial tutorial-left">
+      <p><strong>Bal kéz:</strong><br>Fel/le → bal hangszer<br>Középen → középső hangszer</p>
+    </div>
+
+    <!-- CANVAS + TRACKS -->
+    <div class="container">
+      <canvas id="webcam"></canvas>
+
+      <div class="tracks">
+        <div id="label-container"></div>
+        <div class="sound-control">
+            <div class="track" id="track-0">🎻 Hegedű 1</div>
+              <div class="volume-bar-container">
+                <div id="volume-bar-0" class="volume-bar"></div>
+              </div>
+            <div class="track" id="track-1">🎻 Hegedű 2</div>
+              <div class="volume-bar-container">
+                <div id="volume-bar-1" class="volume-bar"></div>
+              </div>
+            <div class="track" id="track-2">🎼 Cselló</div>
+              <div class="volume-bar-container">
+                <div id="volume-bar-2" class="volume-bar"></div>
+              </div>
         </div>
-      <div class="track" id="track-1">🎻 Hegedű 2</div>
-        <div class="volume-bar-container">
-          <div id="volume-bar-1" class="volume-bar"></div>
-        </div>
-      <div class="track" id="track-2">🎼 Cselló</div>
-        <div class="volume-bar-container">
-          <div id="volume-bar-2" class="volume-bar"></div>
-        </div>
+      </div>
+    </div>
+
+    <!-- JOBB tutorial -->
+    <div class="tutorial tutorial-right">
+      <p><strong>Jobb kéz:</strong><br>Fel/le → jobb hangszer<br>Középen → középső hangszer</p>
+    </div>
   </div>
-  </div>
-</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
