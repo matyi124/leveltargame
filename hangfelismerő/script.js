@@ -36,6 +36,26 @@ const questions = [
     audios: ["tuba1.mp3", "tuba2.mp3", "tuba3.mp3"],
     options: ["Dob", "Tuba", "Furulya", "Hárfa"],
   },
+  {
+    correct: "Fuvola",
+    audios: ["flute1.mp3", "flute2.mp3", "flute3.mp3"],
+    options: ["Dob", "Fuvola", "Furulya", "Gitár"],
+  },
+  {
+    correct: "Gitár",
+    audios: ["gitar1.mp3", "gitar2.mp3", "gitar3.mp3"],
+    options: ["Gitár", "Zongora", "Furulya", "Hárfa"],
+  },
+  {
+    correct: "Harangjáték",
+    audios: ["tuba1.mp3", "tuba2.mp3", "tuba3.mp3"],
+    options: ["Csörgődob", "Harangjáték", "Hárfa", "Orgona"],
+  },
+  {
+    correct: "Zongora",
+    audios: ["piano1.mp3", "piano2.mp3", "piano3.mp3"],
+    options: ["Csörgődob", "Zongora", "Hárfa", "Orgona"],
+  },
 ];
 
 function startGame() {
