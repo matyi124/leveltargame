@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Képkirakó játék</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+canvas { border: 1px solid #ccc; margin-top: 20px; }
+</style>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8 d-flex justify-content-center">
+      <canvas id="webcam" class="border shadow"></canvas>
+    </div>
+
+    <div class="col-md-4">
+      <h1 class="mb-3">🧩 Képkirakó játék</h1>
+      <p class="text-muted">Mozgasd a kezedet a kamera előtt.<br> Egyszerre csak egy kéz legyen a képben!<br>✊ ököl: megfogja<br>🖐 tenyér: elengedi</p>
+
+      <div id="result" class="mt-3 fs-4 fw-bold text-primary">Várakozás...</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
