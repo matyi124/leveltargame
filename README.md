@@ -8,8 +8,7 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ## Játékok
 
 ✅ **Karmester játék**
-- Mozgasd a kezed a kamera előtt, és vezényeld a hangszereket.
-- Kezdő karmestereknek és profiknak egyaránt.  
+- Mozgasd a karjaidat a kamera előtt, és vezényeld a hangszereket.  
    *Elérhető itt:* [`karmester/index.html`](karmester/index.html)
 
 ✅ **Karmester játék V2**
@@ -20,23 +19,21 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ✅ **Kvíz játék**
 - Teszteld a tudásod kérdés-felelet formában.
-- Minden helyes válasszal közelebb jutsz a győzelemhez!
 - <ins>Még nem teljes!</ins>  
    *Elérhető itt:* [`kviz/index.html`](kviz/index.html)
 
 ✅ **Hangszer felismerő**
 - Mobilra optimalizált.
-- Ismerd fel a különböző hangszereket.  
+- Ismerd fel a különböző hangszereket.    
    *Elérhető itt:* [`hangszer/index.html`](hangszer/index.html)
 
 ✅ **Hangazonosító**
-- Kézgesztus felismerő demó: fist/open_palm/pointing.
-- Tárgyakat mozgathatsz a kézmozdulataiddal.  
+- Hangszerek hangjainak felismerése.    
    *Elérhető itt:* [`hangfelismero/index.html`](hangfelismero/index.html)
 
-✅ **Gesztusfelismerő demo**
-- Kézgesztus felismerő demó: fist/open_palm/pointing.
-- Tárgyakat mozgathatsz a kézmozdulataiddal.  
+✅ **Hangszerpuzzle**
+- Mozgasd a kezedet a kamera előtt.
+- Rakd a puzzle darabjait a megfelelő helyükre.  
    *Elérhető itt:* [`gesztusfelismero/index.html`](gesztusfelismero/index.html)
 
   
@@ -61,6 +58,10 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ---
 
 ## Verzió
+
+**1.3.0**  | 2025-07-08
+- Hangszerpuzzle hozzáadva
+- Kissebb bugok javítva
 
 **1.2.0**  | 2025-07-07
 - Hangazonosító játék hozzáadva (még nem teljes)

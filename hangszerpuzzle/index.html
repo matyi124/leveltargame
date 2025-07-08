@@ -12,14 +12,18 @@ canvas { border: 1px solid #ccc; margin-top: 20px; }
 <body class="bg-light">
 
 <div class="container py-4">
-  <h1 class="text-center mb-3">Képkirakó játék</h1>
-  <p class="text-center text-muted">✊ ököl: megfogja • 🖐 tenyér: elengedi</p>
+  <div class="row">
+    <div class="col-md-8 d-flex justify-content-center">
+      <canvas id="webcam" class="border shadow"></canvas>
+    </div>
 
-  <div class="d-flex justify-content-center">
-    <canvas id="webcam" class="border shadow"></canvas>
+    <div class="col-md-4">
+      <h1 class="mb-3">🧩 Képkirakó játék</h1>
+      <p class="text-muted">Mozgasd a kezedet a kamera előtt.<br> Egyszerre csak egy kéz legyen a képben!<br>✊ ököl: megfogja<br>🖐 tenyér: elengedi</p>
+
+      <div id="result" class="mt-3 fs-4 fw-bold text-primary">Várakozás...</div>
+    </div>
   </div>
-
-  <div id="result" class="text-center mt-3 fs-4 fw-bold text-primary">Várakozás...</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
