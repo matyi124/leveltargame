@@ -29,12 +29,12 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ✅ **Hangazonosító**
 - Hangszerek hangjainak felismerése.    
-   *Elérhető itt:* [`hangfelismero/index.html`](hangfelismero/index.html)
+   *Elérhető itt:* [`hangfelismerő/index.html`](hangfelismero/index.html)
 
 ✅ **Hangszerpuzzle**
 - Mozgasd a kezedet a kamera előtt.
 - Rakd a puzzle darabjait a megfelelő helyükre.  
-   *Elérhető itt:* [`gesztusfelismero/index.html`](gesztusfelismero/index.html)
+   *Elérhető itt:* [`gesztusfelismerő/index.html`](gesztusfelismero/index.html)
 
   
   **Comnig Soon...**
