@@ -48,7 +48,7 @@ const questions = [
   },
   {
     correct: "Harangjáték",
-    audios: ["tuba1.mp3", "tuba2.mp3", "tuba3.mp3"],
+    audios: ["harangjatek1.mp3", "harangjatek2.mp3", "harangjatek3.mp3"],
     options: ["Csörgődob", "Harangjáték", "Hárfa", "Orgona"],
   },
   {
@@ -69,7 +69,7 @@ function pickQuestion() {
   optionsDiv.innerHTML = "";
 
   if (remainingQuestions.length === 0) {
-    resultDiv.textContent = "🎉 Végeztem! Gratulálok!";
+    resultDiv.textContent = "🎉 Vége! Gratulálok!";
     playBtn.disabled = true;
     return;
   }
@@ -107,20 +107,22 @@ function playAudio() {
 }
 
 function checkAnswer(selected) {
-  if (selected === currentQuestion.correct) {
-    resultDiv.textContent = "✅ Helyes!";
-    resultDiv.style.color = "green";
+if (selected === currentQuestion.correct) {
+  resultDiv.textContent = "✅ Helyes!";
+  resultDiv.style.color = "green";
 
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-    }
-
-    setTimeout(pickQuestion, 1500);
-  } else {
-    resultDiv.textContent = "❌ Próbáld újra!";
-    resultDiv.style.color = "red";
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
   }
+
+  playBtn.disabled = true;
+
+  setTimeout(() => {
+    playBtn.disabled = false;
+    pickQuestion();
+  }, 1500);
+}
 }
 
 playBtn.onclick = () => playAudio();
