@@ -9,9 +9,9 @@ document.getElementById("startBtn").addEventListener("click", () => {
 });
 
 const audioTracks = [
-  new Audio("hangok/Canon_in_D__Pachelbel-Cello.mp3"),
-  new Audio("hangok/Canon_in_D__Pachelbel-Fiolin.mp3"),
-  new Audio("hangok/Canon_in_D__Pachelbel-Fiolin_(1).mp3"),
+  new Audio("hangok/Disturbia_(Bass).mp3"),
+  new Audio("hangok/Disturbia_(Drums).mp3"),
+  new Audio("hangok/Disturbia_(Vocals).mp3"),
 ];
 const volumes = [1, 1, 1];
 
