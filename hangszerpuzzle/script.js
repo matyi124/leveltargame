@@ -4,8 +4,8 @@ let canvas,
   knnClassifier;
 const resultDiv = document.getElementById("result");
 
-const puzzleImages = ["puzzle1.png", "puzzle2.png","puzzle3.png"];
-const outlineImages = ["outline1.png", "outline2.png","outline3.png"];
+const puzzleImages = ["puzzle1.png", "puzzle2.png","puzzle3.png", "puzzle4.png", "puzzle5.png"];
+const outlineImages = ["outline1.png", "outline2.png","outline3.png", "outline4.png", "outline5.png"];
 let outline;
 let currentPuzzleIndex = 0;
 
