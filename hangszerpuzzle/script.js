@@ -4,8 +4,8 @@ let canvas,
   knnClassifier;
 const resultDiv = document.getElementById("result");
 
-const puzzleImages = ["puzzle1.png", "puzzle2.png","puzzle3.png", "puzzle4.png", "puzzle5.png"];
-const outlineImages = ["outline1.png", "outline2.png","outline3.png", "outline4.png", "outline5.png"];
+const puzzleImages = ["puzzle1.png", "puzzle2.png", "puzzle4.png", "puzzle5.png"];
+const outlineImages = ["outline1.png", "outline2.png", "outline4.png", "outline5.png"];
 let outline;
 let currentPuzzleIndex = 0;
 
@@ -22,8 +22,7 @@ const grabTolerance = 30;
 
 let heldPiece = null;
 
-const puzzleOffsetX = (canvasSize - cols * pieceSize) / 2;
-const puzzleOffsetY = 50;
+let puzzleOffsetX, puzzleOffsetY;
 
 async function loadCSVandTrain() {
   knnClassifier = ml5.KNNClassifier();
@@ -54,6 +53,12 @@ function setupPuzzle() {
 
     pieceWidth = img.width / cols;
     pieceHeight = img.height / rows;
+
+    const puzzleWidth = pieceWidth * cols;
+const puzzleHeight = pieceHeight * rows;
+
+puzzleOffsetX = (canvas.width - puzzleWidth) / 2;
+puzzleOffsetY = (canvas.height - puzzleHeight) / 2;
 
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
