@@ -123,6 +123,10 @@ if (selected === currentQuestion.correct) {
     pickQuestion();
   }, 1500);
 }
+else {
+    resultDiv.textContent = "❌ Rossz válasz!";
+    resultDiv.style.color = "red";
+}
 }
 
 playBtn.onclick = () => playAudio();
