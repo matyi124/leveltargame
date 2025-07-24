@@ -19,7 +19,7 @@ jobs:
       - name: Install Terser
         run: npm install -g terser
 
-      - name: Minify and rename with date
+      - name: Minify JS files with date
         run: |
           today=$(date +%Y%m%d)
           for f in $(find . -type f -name '*.js' ! -name '*.min.js'); do
@@ -28,11 +28,20 @@ jobs:
             out="$dir/$base.$today.min.js"
             terser "$f" -o "$out"
           done
+          echo "MINI_DATE=$today" >> $GITHUB_ENV
 
-      - name: Commit minified version
+      - name: Replace script references in HTML
+        run: |
+          find . -type f -name 'index.html' | while read html; do
+            sed -i "s|script.js\"|script.${{ env.MINI_DATE }}.min.js\"|g" "$html"
+            sed -i "s|predictor.js\"|predictor.${{ env.MINI_DATE }}.min.js\"|g" "$html"
+          done
+
+      - name: Commit changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add ./**/*.min.js
-          git commit -m "Auto-minify JS with date version" || echo "No changes"
+          git add ./**/*.html
+          git commit -m "Auto-minify and update HTML with versioned JS" || echo "No changes"
           git push
