@@ -22,9 +22,10 @@ jobs:
       - name: Minify and rename with date
         run: |
           today=$(date +%Y%m%d)
-          for f in *.js; do
-            [ "$f" != "${f%.min.js}" ] && continue  # Skip already minified
-            out="${f%.js}.$today.min.js"
+          for f in $(find . -type f -name '*.js' ! -name '*.min.js'); do
+            dir=$(dirname "$f")
+            base=$(basename "$f" .js)
+            out="$dir/$base.$today.min.js"
             terser "$f" -o "$out"
           done
 
@@ -32,6 +33,6 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add *.min.js
+          git add ./**/*.min.js
           git commit -m "Auto-minify JS with date version" || echo "No changes"
           git push
