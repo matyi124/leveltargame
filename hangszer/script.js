@@ -18,7 +18,6 @@ function setupUI() {
   console.log("V11.2.3");
 }
 
-//kamera inicializálása
 function initCamera() {
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     .then(stream => {
