@@ -87,7 +87,8 @@ function pickQuestion() {
     btn.textContent = opt;
     btn.onclick = () => checkAnswer(opt);
     optionsDiv.appendChild(btn);
-    btn.className = "btn btn-outline-secondary col-5 col-md-3";
+    btn.classList.add("col-md-2", "btn", "option-btn");
+
     btn.onclick = () => checkAnswer(opt);
     optionsDiv.appendChild(btn);
   });
