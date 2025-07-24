@@ -88,7 +88,6 @@ function pickQuestion() {
     btn.onclick = () => checkAnswer(opt);
     optionsDiv.appendChild(btn);
     btn.classList.add("col-md-2", "btn", "option-btn");
-
     btn.onclick = () => checkAnswer(opt);
     optionsDiv.appendChild(btn);
   });
