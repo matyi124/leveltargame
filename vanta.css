@@ -1,0 +1,60 @@
+#vanta-bg {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: -1; 
+}
+
+.gradient-border-btn {
+  position: relative;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.gradient-border-btn::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  background: linear-gradient(90deg, #40ffaa, #4079ff, #40ffaa);
+  background-size: 400% 400%;
+  border-radius: 12px;
+  animation: gradientMove 5s ease infinite;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude; /* Chrome */
+  -webkit-mask-composite: destination-out; /* Firefox/Safari */
+  padding: 2px;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-border-btn:hover {
+  transform: scale(1.03);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(64, 255, 170, 0.3);
+}
