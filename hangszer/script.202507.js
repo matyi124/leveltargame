@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", async function () {
 let video, canvas, context, result, startButton;
 let streamReady = false; 
 const foundInstruments = new Set(); 
@@ -187,4 +188,4 @@ document.getElementById("difficulty").addEventListener("change", (e) => {
 setTotalInstruments(document.querySelectorAll("#instrument-list tr").length);
 
 });
-
+});
