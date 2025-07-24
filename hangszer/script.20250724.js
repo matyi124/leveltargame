@@ -110,11 +110,8 @@ window.addEventListener("DOMContentLoaded",async () => {
 
   setupUI();
   initCamera();
-   const popup = document.getElementById('popup');
-  const okButton = document.getElementById('popup-ok');
-  okButton.addEventListener('click', () => {
-    popup.style.display = 'none'; 
-  });
+  const introModal = new bootstrap.Modal(document.getElementById("popup"));
+introModal.show();
 });
 
 let mode = "normal";
