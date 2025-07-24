@@ -1,0 +1,37 @@
+name: Minify JS and version with date
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  minify-js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Terser
+        run: npm install -g terser
+
+      - name: Minify and rename with date
+        run: |
+          today=$(date +%Y%m%d)
+          for f in *.js; do
+            [ "$f" != "${f%.min.js}" ] && continue  # Skip already minified
+            out="${f%.js}.$today.min.js"
+            terser "$f" -o "$out"
+          done
+
+      - name: Commit minified version
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add *.min.js
+          git commit -m "Auto-minify JS with date version" || echo "No changes"
+          git push
