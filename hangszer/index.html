@@ -20,16 +20,6 @@
   <body>
     <div class="container mt-5 text-center">
       <h1 class="mb-4">Találd meg a hangszert! <small class="text-muted"></small></h1>
-      <div id="difficultySelect" class="mb-3">
-        <label for="difficulty" class="form-label">Nehézségi szint:</label>
-        <select id="difficulty" class="form-select">
-          <option value="normal">Normál</option>
-          <option value="hard">Nehéz (időre megy)</option>
-        </select>
-      </div>
-
-       <div id="timerDisplay">Hátralévő idő: <span id="timeLeft">120</span> mp</div>
-
       <div class="card mx-auto" style="max-width: 400px;">
         <div class="card-body">
           <video id="video" class="w-100 mb-3 border rounded" height="240" autoplay muted playsinline></video>
@@ -52,6 +42,7 @@
               <tr id="Csengő, kolomp, pergő"><td>Csengő, kolomp, pergő</td></tr>
               <tr id="Szaxofon"><td>Szaxofon</td></tr>
               <tr id="Úttörő kürt"><td>Úttörő kürt</td></tr>
+            <tr id="Kecskeduda"><td>Kecskeduda</td></tr>
             </tbody>
           </table>
         </div>
@@ -70,8 +61,6 @@
               A játék során a kamera segítségével kell azonosítanod a hangszereket.<br>
               A pontos eredmény érdekében tartsd a kamerát úgy, hogy a hangszer pont benne legyen a képben.<br>
               Ha megvan a keresett hangszer csak kattints a Kép készítés gombra.<br>
-              Két féle nehézségi szint közül lehet választani, normál illetve nehéz.<br>
-              Nehéz fokozaton 2 perc áll rendelkezésedre hogy megtalálj minden hangszert.<br>
               Sok sikert!
         </p>
       </div>
