@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Utca Sidescroller – OOP, belépéssel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <h1>Utca Sidescroller <span>demo</span></h1>
+    </header>
+
+    <main class="viewport" id="viewport">
+      <!-- Parallax rétegek -->
+      <div class="layer clouds1" data-speed="0.12"><div class="strip"></div></div>
+      <div class="layer clouds2" data-speed="0.18"><div class="strip"></div></div>
+      <div class="layer city-far" data-speed="0.25"><div class="strip"></div></div>
+      <div class="layer city-mid" data-speed="0.5"><div class="strip"></div></div>
+
+      <!-- Utcafront -->
+      <div class="houses" id="houses"></div>
+      <div class="street"></div>
+    </main>
+
+    <footer class="ui">
+      <div class="row">
+        <label for="slider">Mozgás →</label>
+        <input id="slider" type="range" min="0" value="0" step="1" />
+        <span class="pos">x: <b id="pos">0</b> px</span>
+        <span class="sep">|</span>
+        <span class="vw">Viewport: <b id="vw">-</b></span>
+        <span class="sep">|</span>
+        <span class="sw">Panoráma: <b id="sw">-</b></span>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
