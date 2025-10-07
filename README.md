@@ -7,16 +7,6 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ## Játékok
 
-✅ **Karmester játék**
-- Mozgasd a karjaidat a kamera előtt, és vezényeld a hangszereket.  
-   *Elérhető itt:* [`karmester/index.html`](karmester/index.html)
-
-✅ **Karmester játék V2**
-- Az eredeti karmester játék továbbfejlesztett változata.
-- Más technológiát használ: Mediapipe helyett Teachable Machine modellel.
-- Kicsit más kezelőfelület és pontosabb kézdetektálás.  
-   *Elérhető itt:* [`karmesterV2/index.html`](karmesterV2/index.html)
-
 ✅ **Kvíz játék**
 - Teszteld a tudásod kérdés-felelet formában.
 - <ins>Még nem teljes!</ins>  
@@ -36,8 +26,11 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 - Rakd a puzzle darabjait a megfelelő helyükre.  
    *Elérhető itt:* [`hangszerpuzzle/index.html`](hangszerpuzzle/index.html)
 
-  
-  **Comnig Soon...**
+✅ **Utcanézet demo**
+- Görgesd jobbra/balra hogy végigmenj az utcán.
+- Kattints egy házra hogy bemenj és körülnézz belül.  
+   *Elérhető itt:* [`streetview/index.html`](streetview/index.html)
+
 ---
 
 
@@ -58,6 +51,10 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ---
 
 ## Verzió
+
+**1.4.0**  | 2025-10-07
+- Utcanézet hozzáadva
+- Karmester kivéve
 
 **1.3.0**  | 2025-07-08
 - Hangszerpuzzle hozzáadva

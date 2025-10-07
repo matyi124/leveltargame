@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Utca Sidescroller – OOP, belépéssel</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Utca Sidescroller – tervrajz párosítás</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="wrap">
@@ -17,12 +17,17 @@
       <div class="layer clouds1" data-speed="0.12"><div class="strip"></div></div>
       <div class="layer clouds2" data-speed="0.18"><div class="strip"></div></div>
       <div class="layer city-far" data-speed="0.25"><div class="strip"></div></div>
-      <div class="layer city-mid" data-speed="0.5"><div class="strip"></div></div>
+      <div class="layer city-mid" data-speed="0.50"><div class="strip"></div></div>
 
       <!-- Utcafront -->
       <div class="houses" id="houses"></div>
       <div class="street"></div>
     </main>
+
+    <!-- Tervrajz sáv -->
+    <section class="bp-tray">
+      <div class="bp-row" id="bpRow"></div>
+    </section>
 
     <footer class="ui">
       <div class="row">
@@ -37,6 +42,6 @@
     </footer>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
