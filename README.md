@@ -40,8 +40,8 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 | --------------------------- | ----------------------------------------|
 | HTML5 / CSS3 / JavaScript   | alap                                    |
 | Bootstrap 5                 | reszponzív dizájn                       |
-| Teachable Machine + tf.js   | felismerő modellek (karmesterV2, demo)  |
-| Mediapipe Hands             | kéz landmarkok detektálása (karmester)  |
+| MediaPipe Hands + ml5.js    | kéz és gesztus alapú vezérlés a puzzle-ben |
+| Web Audio API               | hangminták lejátszása a hangazonosítóhoz |
 | Webkamera API               | kameraképek, USB deviceId               |
 | GitHub Pages                | hostolás                                |
 | Git / VS Code               | fejlesztés                              |
@@ -53,8 +53,8 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ## Verzió
 
 **1.4.0**  | 2025-10-07
-- Utcanézet hozzáadva
-- Karmester kivéve
+- Utcanézet játék hozzáadva
+- Elavult prototípusok eltávolítva
 
 **1.3.0**  | 2025-07-08
 - Hangszerpuzzle hozzáadva
@@ -62,13 +62,12 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 **1.2.0**  | 2025-07-07
 - Hangazonosító játék hozzáadva (még nem teljes)
-- KarmesterV2 javítva
+- Puzzle prototípus finomhangolása
 - Kissebb bugok javítva
 
 **1.1.0**  | 2025-07-07
-- Karmester játék második verziója hozzáadva (karmesterV2)
 - Gesztusfelismerő demó hozzáadva
 
-     
-**1.0.0**  | 2025-07-04 
+
+**1.0.0**  | 2025-07-04
 - Repositorik egyesítése, weboldal élesítése

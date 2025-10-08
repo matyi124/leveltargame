@@ -85,8 +85,6 @@ function pickQuestion() {
   shuffled.forEach((opt) => {
     const btn = document.createElement("button");
     btn.textContent = opt;
-    btn.onclick = () => checkAnswer(opt);
-    optionsDiv.appendChild(btn);
     btn.classList.add("col-md-2", "btn", "option-btn");
     btn.onclick = () => checkAnswer(opt);
     optionsDiv.appendChild(btn);
