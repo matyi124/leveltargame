@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Utca Sidescroller – tervrajz párosítás</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="wrap">
@@ -22,12 +22,12 @@
       <!-- Utcafront -->
       <div class="houses" id="houses"></div>
       <div class="street"></div>
-    </main>
 
-    <!-- Tervrajz sáv -->
-    <section class="bp-tray">
-      <div class="bp-row" id="bpRow"></div>
-    </section>
+      <!-- Tervrajz sáv -->
+      <section class="bp-panel" id="bpPanel" aria-label="Tervrajzok">
+        <div class="bp-row" id="bpRow"></div>
+      </section>
+    </main>
 
     <footer class="ui">
       <div class="row">
@@ -42,6 +42,6 @@
     </footer>
   </div>
 
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
