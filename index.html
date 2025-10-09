@@ -12,67 +12,64 @@
     <link href="vanta.css" rel="stylesheet" />
   </head>
   <body class="bg-primary text-white text-center">
-    <body class="text-white text-center">
-      <div id="vanta-bg"></div>
-      <div class="container py-5">
-        <h1 class="mb-5">Válassz játékot!</h1>
-        <div class="row g-4 justify-content-center">
-          </div>
-          <div class="col-12 col-md-4">
-            <a
-              class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
-              href="kviz/index.html"
-              >Kvíz játék</a
-            >
-          </div>
-          <div class="col-12 col-md-4">
-            <a
-              class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
-              href="hangszer/index.html"
-              >Hangszer felismerő (mobilra)</a
-            >
-          </div>
-          <div class="col-12 col-md-4">
-            <a
-              class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
-              href="hangfelismerő/index.html"
-              >Hangazonosító</a
-            >
-          </div>
-          <div class="col-12 col-md-4">
-            <a
-              class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
-              href="hangszerpuzzle/index.html"
-              >hangszerpuzzle (kamerás, gépre)</a
-            >
-          </div>
-           <div class="col-12 col-md-4">
-            <a
-              class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
-              href="streetview/index.html"
-              >Utcanézet</a
-            >
-          </div>
+    <div id="vanta-bg"></div>
+    <div class="container py-5">
+      <h1 class="mb-5">Válassz játékot!</h1>
+      <div class="row g-4 justify-content-center">
+        <div class="col-12 col-md-4">
+          <a
+            class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
+            href="kviz/index.html"
+            >Kvíz játék</a
+          >
+        </div>
+        <div class="col-12 col-md-4">
+          <a
+            class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
+            href="hangszer/index.html"
+            >Hangszer felismerő (mobilra)</a
+          >
+        </div>
+        <div class="col-12 col-md-4">
+          <a
+            class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
+            href="hangfelismerő/index.html"
+            >Hangazonosító</a
+          >
+        </div>
+        <div class="col-12 col-md-4">
+          <a
+            class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
+            href="hangszerpuzzle/index.html"
+            >Hangszerpuzzle (kamerás, gépre)</a
+          >
+        </div>
+        <div class="col-12 col-md-4">
+          <a
+            class="btn btn-lg w-100 py-3 shadow gradient-border-btn"
+            href="streetview/index.html"
+            >Utcanézet</a
+          >
         </div>
       </div>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/vanta/dist/vanta.fog.min.js"></script>
-      <script>
-        VANTA.FOG({
-          el: "#vanta-bg",
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          highlightColor: 0xffc300,
-          midtoneColor: 0xff1f00,
-          lowlightColor: 0x2d00ff,
-          baseColor: 0x0f0f1f,
-          blurFactor: 0.5,
-          speed: 1.0,
-          zoom: 0.8,
-        });
-      </script>
-    </body>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta/dist/vanta.fog.min.js"></script>
+    <script>
+      VANTA.FOG({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        highlightColor: 0xffc300,
+        midtoneColor: 0xff1f00,
+        lowlightColor: 0x2d00ff,
+        baseColor: 0x0f0f1f,
+        blurFactor: 0.5,
+        speed: 1.0,
+        zoom: 0.8,
+      });
+    </script>
   </body>
 </html>
