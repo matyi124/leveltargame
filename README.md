@@ -7,11 +7,6 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 
 ## Játékok
 
-✅ **Kvíz játék**
-- Teszteld a tudásod kérdés-felelet formában.
-- <ins>Még nem teljes!</ins>  
-   *Elérhető itt:* [`kviz/index.html`](kviz/index.html)
-
 ✅ **Hangszer felismerő**
 - Mobilra optimalizált.
 - Ismerd fel a különböző hangszereket.    
@@ -20,16 +15,6 @@ A projekt célja, hogy játékos formában ismertesse meg a látogatókat az id�
 ✅ **Hangazonosító**
 - Hangszerek hangjainak felismerése.    
    *Elérhető itt:* [`hangfelismerő/index.html`](hangfelismerő/index.html)
-
-✅ **Hangszerpuzzle**
-- Mozgasd a kezedet a kamera előtt.
-- Rakd a puzzle darabjait a megfelelő helyükre.  
-   *Elérhető itt:* [`hangszerpuzzle/index.html`](hangszerpuzzle/index.html)
-
-✅ **Utcanézet demo**
-- Görgesd jobbra/balra hogy végigmenj az utcán.
-- Kattints egy házra hogy bemenj és körülnézz belül.  
-   *Elérhető itt:* [`streetview/index.html`](streetview/index.html)
 
 ---
 
